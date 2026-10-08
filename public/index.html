@@ -1,0 +1,3169 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><title>Scriptus Viator</title><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ---------- tokens — "L'Atelier", deux teintes dominantes : orange brûlé (fonctionnel) + bleu ciel (zones poïétiques) ---------- */
+  :root{
+    --bg:#faf9f6;
+    --bg-soft:#f1ede3;
+    --surface:#ffffff;
+    --surface-2:#f4f1ea;
+    --ink:#1b1b18;
+    --muted:#79766c;
+    --border:#e6e2d8;
+    --border-strong:#d9cfba;   /* cartes/contenants — contour plus marqué que --border */
+    --accent:#c2410c;         /* orange brûlé — fonctionnel : boutons, états actifs, progression, lens praxéologique */
+    --accent-soft:#ffe6d1;
+    --accent-ink:#ffffff;
+    --accent-deep:#7c2d12;    /* orange brûlé, plus sombre — lettrage « Scriptus Viator » + titres de section (même famille, jamais un rouge tiers) */
+    --sky:#0369a1;            /* bleu ciel — seconde teinte dominante : lens poïétique, geste « ajuster », zones en regard des zones orange */
+    --sky-soft:#e0f2fe;
+    --sky-ink:#ffffff;
+    --stage-done:#5c7a52;
+    --stage-done-soft:#dee6d8;
+    --glow: 194,65,12;
+    --shadow: 27,27,24;
+    --elev-1: 0 1px 2px rgba(var(--shadow),.05), 0 3px 8px -3px rgba(var(--shadow),.10);
+    --elev-2: 0 3px 8px -3px rgba(var(--shadow),.12), 0 12px 26px -10px rgba(var(--shadow),.20);
+    --elev-inset: inset 0 2px 6px rgba(var(--shadow),.09), inset 0 0 0 1px rgba(var(--shadow),.05);
+    --serif:'Fraunces', Georgia, 'Iowan Old Style', serif;   /* lettrage « Scriptus Viator » (italique) + canevas d'écriture (romain) */
+    --sans:'Archivo', -apple-system, 'Segoe UI', sans-serif;
+    --mono:'IBM Plex Mono', 'SFMono-Regular', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161310;
+      --bg-soft:#1c170f;
+      --surface:#211c14;
+      --surface-2:#2a2317;
+      --ink:#f0e9db;
+      --muted:#a89a84;
+      --border:#3a3123;
+      --border-strong:#4d4029;
+      --accent:#e2894a;
+      --accent-soft:#3d2a1c;
+      --accent-ink:#1a1108;
+      --accent-deep:#f4a969;
+      --sky:#5fc2f2;
+      --sky-soft:#12293a;
+      --sky-ink:#0b1b26;
+      --stage-done:#8bab7e;
+      --stage-done-soft:#243021;
+      --glow: 226,137,74;
+      --shadow: 0,0,0;
+      --elev-1: 0 1px 2px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.03);
+      --elev-2: 0 4px 10px -4px rgba(0,0,0,.5), 0 16px 32px -14px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.04);
+      --elev-inset: inset 0 2px 8px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161310;
+    --bg-soft:#1c170f;
+    --surface:#211c14;
+    --surface-2:#2a2317;
+    --ink:#f0e9db;
+    --muted:#a89a84;
+    --border:#3a3123;
+    --border-strong:#4d4029;
+    --accent:#e2894a;
+    --accent-soft:#3d2a1c;
+    --accent-ink:#1a1108;
+    --accent-deep:#f4a969;
+    --sky:#5fc2f2;
+    --sky-soft:#12293a;
+    --sky-ink:#0b1b26;
+    --stage-done:#8bab7e;
+    --stage-done-soft:#243021;
+    --glow: 226,137,74;
+    --shadow: 0,0,0;
+    --elev-1: 0 1px 2px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.03);
+    --elev-2: 0 4px 10px -4px rgba(0,0,0,.5), 0 16px 32px -14px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.04);
+    --elev-inset: inset 0 2px 8px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;}
+  ::selection{background:rgba(var(--glow),0.28);}
+
+  .app{
+    display:grid;
+    grid-template-columns:250px 1fr;
+    min-height:100vh;
+  }
+
+  /* ---------- rail ---------- */
+  .rail{
+    background:var(--bg-soft);
+    border-right:1px solid var(--border);
+    box-shadow:2px 0 14px -8px rgba(var(--shadow),.28);
+    padding:26px 20px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    position:relative;
+    z-index:2;
+  }
+  .wordmark{display:flex; align-items:baseline; gap:7px;}
+  .wordmark .flame{font-size:16px; line-height:1;}
+  .wordmark-word{font-family:var(--serif); font-style:italic; font-weight:500; font-size:19px; letter-spacing:-.01em; color:var(--accent-deep);}
+  .tagline{display:block; margin-top:5px; font-size:11.5px; color:var(--muted); font-family:var(--sans); font-style:italic;}
+  .tagline-scopes{display:block; margin-top:4px; font-size:9.5px; color:var(--muted); font-family:var(--mono); text-transform:uppercase; letter-spacing:.05em;}
+
+  /* signature de l'usager (nom · lieu · date) et signature Scriptus Viator, en bas des textes de phase */
+  .signature-line{margin-top:14px; text-align:right; font-family:var(--mono); font-size:11px; letter-spacing:.02em; color:var(--muted); font-style:normal;}
+  .scriptus-signature{margin-top:18px; text-align:right; font-family:var(--serif); font-style:italic; font-weight:500; font-size:14px; letter-spacing:-.01em; color:var(--accent-deep);}
+
+  .project-card{
+    background:var(--surface);
+    border:1px solid var(--border-strong);
+    border-radius:4px;
+    padding:13px 14px;
+    box-shadow:var(--elev-1);
+  }
+  .project-card .label{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted);}
+  .project-card .title{font-family:var(--sans); font-weight:700; font-size:16px; margin:4px 0 2px; color:var(--ink);}
+  .project-card .subtitle{font-family:var(--sans); font-style:italic; font-size:12px; color:var(--muted); margin:0 0 6px;}
+  .project-card .meta{font-size:11.5px; color:var(--muted);}
+  .spine-cycle-note{font-family:var(--mono); font-size:9.5px; color:var(--muted); font-style:italic; padding:2px 4px 0; line-height:1.4;}
+  .demo-badge{
+    display:inline-block; margin-top:8px; font-family:var(--mono); font-size:9.5px;
+    letter-spacing:.05em; text-transform:uppercase; color:var(--accent);
+    border:1px solid var(--accent); border-radius:2px; padding:2px 6px;
+    background:var(--accent-soft);
+  }
+
+  nav.spine{display:flex; flex-direction:column; gap:0;}
+  .spine-title{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin-bottom:9px;}
+  .spine-item{
+    display:flex; align-items:flex-start; gap:9px;
+    padding:8px 5px; border-radius:4px; cursor:pointer;
+    border:1px solid transparent;
+    text-align:left; background:none; width:100%;
+    position:relative;
+  }
+  .spine-item:hover{background:var(--surface-2);}
+  .spine-item.active{background:var(--surface); border-color:var(--border);}
+  .spine-line{
+    position:absolute; left:19px; top:32px; bottom:-12px; width:1px; background:var(--border);
+  }
+  .spine-item:last-child .spine-line{display:none;}
+  .spine-dot{
+    flex:none; width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:10.5px; font-weight:500;
+    border:1.5px solid var(--border); color:var(--muted);
+    background:var(--surface); position:relative; z-index:1;
+  }
+  .spine-dot.done{border-color:var(--stage-done); color:var(--stage-done); background:var(--stage-done-soft);}
+  .spine-dot.current{
+    border-color:var(--accent); color:var(--accent-ink); background:var(--accent);
+    box-shadow:0 0 0 4px rgba(var(--glow),.22);
+  }
+  .spine-text .name{font-size:13px; font-weight:600; font-family:var(--sans); color:var(--ink);}
+  .spine-text .status{font-size:10px; color:var(--muted); font-family:var(--mono); text-transform:uppercase; letter-spacing:.03em;}
+
+  .rail-secondary{display:flex; flex-direction:column; gap:1px; border-top:1px solid var(--border); padding-top:13px;}
+  .rail-link{
+    display:flex; align-items:center; gap:8px; padding:7px 5px; border-radius:4px;
+    background:none; border:none; text-align:left; cursor:pointer; color:var(--ink); font-size:12.5px;
+  }
+  .rail-link:hover{background:var(--surface-2);}
+  .rail-link.active{background:var(--surface); font-weight:600;}
+  .rail-foot{margin-top:auto; display:flex; flex-direction:column; gap:7px;}
+  .reset-link{
+    font-family:var(--mono); font-size:10.5px; color:var(--muted);
+    background:none; border:none; cursor:pointer; text-align:left; padding:3px 5px;
+  }
+  .reset-link:hover{color:var(--ink);}
+
+  /* ---------- main ---------- */
+  main{padding:34px 42px 80px; max-width:1140px;}
+  .crumb{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:10px;}
+  .view-head{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:6px;}
+  .view-head h2{font-size:29px; margin:0; font-weight:700; letter-spacing:-.01em; color:var(--accent-deep); text-wrap:balance;}
+  .view-head .flame-h{font-size:22px; margin-right:8px;}
+  .working-title{font-family:var(--sans); font-style:italic; font-weight:400; color:var(--muted); font-size:14px; margin:5px 0 0;}
+  .stage-blurb{color:var(--muted); font-size:14.5px; max-width:62ch; margin:6px 0 28px;}
+
+  details.stage-full{margin:14px 0 30px; border:1px solid var(--border-strong); border-radius:4px; background:var(--surface); box-shadow:var(--elev-1);}
+  details.stage-full summary{cursor:pointer; padding:11px 15px; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); list-style:none;}
+  details.stage-full summary::-webkit-details-marker{display:none;}
+  details.stage-full summary::before{content:"▸  ";}
+  details.stage-full[open] summary::before{content:"▾  ";}
+  details.stage-full[open] summary{border-bottom:1px solid var(--border);}
+  details.stage-full .full-text{padding:14px 17px 4px; font-size:14px; line-height:1.7; color:var(--ink); max-width:66ch;}
+  details.stage-full .full-text p{margin:0 0 13px;}
+  details.stage-full .full-text p:last-child{margin-bottom:0;}
+  .drawer-actions{display:flex; gap:8px; flex-wrap:wrap; padding:0 17px 14px;}
+
+  /* ---------- retour de coaching — lu seulement, écrit depuis admin-person.html ---------- */
+  .coaching-note-block{
+    border:1px solid var(--border-strong); border-left:4px solid var(--accent-deep); border-radius:6px;
+    background:var(--surface); padding:16px 20px 18px; margin:0 0 26px; box-shadow:var(--elev-1);
+  }
+  .coaching-note-head{display:flex; align-items:center; gap:8px; margin-bottom:9px;}
+  .coaching-note-head .flame{font-size:13px;}
+  .coaching-note-head h4{margin:0; font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--mono); font-weight:600; color:var(--accent-deep);}
+  .coaching-note-text{font-family:var(--serif); font-size:15px; line-height:1.72; color:var(--ink); white-space:pre-wrap; margin:0;}
+
+  .method-full{font-size:13px; color:var(--muted); line-height:1.65; max-width:62ch; margin:6px 0 0;}
+  .method-full p{margin:0 0 10px;}
+  .method-full p:last-child{margin-bottom:0;}
+
+  .stat-row{display:flex; gap:24px; margin:16px 0 32px; flex-wrap:wrap;}
+  .stat{font-family:var(--mono);}
+  .stat .n{font-size:18px; font-weight:600; font-family:var(--sans); color:var(--ink);}
+  .stat .l{font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); display:block;}
+
+  /* ---------- cercle des étapes — même grammaire circulaire que Vita Viator : un centre, un nœud par
+     étape disposé autour, un trait qui les relie. Un seul accent pour toute la roue — aucune teinte
+     distincte par nœud ; le statut (fait / en cours / à venir) se lit par la forme, pas la couleur. ---------- */
+  .wheel-frame{display:flex; justify-content:center; margin:8px 0 36px;}
+  .stage-wheel{position:relative; width:100%; max-width:520px; aspect-ratio:1/1; margin:0 auto;}
+  .wheel-lines{position:absolute; inset:0; width:100%; height:100%; overflow:visible;}
+  .wheel-line{stroke:var(--border-strong); stroke-width:.6; transition:stroke .15s ease, stroke-width .15s ease;}
+  .wheel-line.active{stroke:var(--accent); stroke-width:.9;}
+  .wheel-center{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:2;
+    width:29%; aspect-ratio:1/1; border-radius:50%; text-align:center; padding:6%;
+    background:var(--surface); border:1.5px solid var(--border-strong); box-shadow:var(--elev-1);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  }
+  .wheel-center .wc-eyebrow{font-family:var(--mono); font-size:8.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);}
+  .wheel-center .wc-title{
+    font-family:var(--serif); font-style:italic; font-weight:500; font-size:12.5px; line-height:1.28; color:var(--accent-deep);
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .wheel-node{
+    position:absolute; z-index:1; width:25%; aspect-ratio:1/1; border-radius:50%;
+    transform:translate(-50%,-50%); padding:5%; text-align:center; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    border:1.5px solid var(--border-strong); background:var(--surface); box-shadow:var(--elev-1);
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .wheel-node .wn-num{font-family:var(--mono); font-size:9px; color:var(--muted);}
+  .wheel-node .wn-name{font-family:var(--sans); font-size:11px; font-weight:700; line-height:1.15; color:var(--ink);}
+  .wheel-node .wn-status{font-family:var(--mono); font-size:8px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted);}
+  .wheel-node.done{background:var(--surface-2);}
+  .wheel-node.done .wn-num::after{content:" ✓"; color:var(--muted);}
+  .wheel-node.current{border-color:var(--accent); box-shadow:0 0 0 4px rgba(var(--glow),.16), var(--elev-1);}
+  .wheel-node.current .wn-status{color:var(--accent);}
+  .wheel-node.upcoming{border-style:dashed;}
+  .wheel-node:hover, .wheel-node.active{border-color:var(--accent); transform:translate(-50%,-50%) scale(1.05); box-shadow:var(--elev-2);}
+  @media (max-width:640px){
+    .wheel-node .wn-name{font-size:9.5px;}
+    .wheel-center .wc-title{font-size:11px;}
+  }
+  .pill{
+    align-self:flex-start; font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    padding:2px 6px; border-radius:2px; margin-top:auto;
+  }
+  .pill.done{background:var(--stage-done-soft); color:var(--stage-done);}
+  .pill.current{background:var(--accent-soft); color:var(--accent);}
+  .pill.upcoming{background:var(--surface-2); color:var(--muted);}
+
+  .two-col-preview{display:grid; grid-template-columns:1fr 1fr; gap:26px;}
+  .preview-col h3{font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--mono); font-weight:500; margin:0 0 13px; display:flex; align-items:center; gap:7px; color:var(--ink);}
+  .swatch{width:8px; height:8px; border-radius:50%; display:inline-block;}
+  .mini-entry{padding:9px 0; border-top:1px solid var(--border); font-size:13px;}
+  .mini-entry:first-of-type{border-top:none;}
+  .mini-entry .d{font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:3px;}
+
+  /* ---------- écran d'accueil ---------- */
+  .welcome-hero{max-width:74ch; margin-bottom:32px;}
+  .welcome-mark{display:flex; align-items:center; gap:8px; font-family:var(--serif); font-style:italic; font-weight:500; font-size:15px; color:var(--accent-deep); margin-bottom:20px;}
+  .welcome-hero h2{font-size:31px; margin:0 0 14px; font-weight:700; color:var(--accent-deep); text-wrap:balance;}
+  .welcome-lede{font-size:15px; line-height:1.7; color:var(--ink); margin:0 0 14px;}
+  .welcome-lede:last-of-type{margin-bottom:0;}
+  .welcome-note{font-size:12.5px; color:var(--muted); font-style:italic; max-width:70ch; margin:0 0 22px;}
+
+  /* ---------- named writing spaces (per phase) ---------- */
+  /* orange brûlé = lens praxéologique, bleu ciel = lens poïétique — la teinte du liseré du haut signe chaque groupe de lecture */
+  .named-space{
+    border:1px solid var(--border-strong); border-top:3px solid var(--border-strong); border-radius:6px;
+    background:var(--surface); padding:22px 24px 24px; margin-bottom:26px; box-shadow:var(--elev-2);
+  }
+  .named-space.lens-praxeologique{border-top-color:var(--accent);}
+  .named-space.lens-poietique{border-top-color:var(--sky);}
+  .named-space.legs-space{border-top-color:var(--accent-deep);}
+  .named-space-head{display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:3px; flex-wrap:wrap;}
+  .named-space-head h3{margin:0; font-size:16.5px; font-weight:700; color:var(--ink);}
+  .lens-badge{font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em; padding:2px 7px; border-radius:2px; flex:none;}
+  .lens-badge.poietique{color:var(--sky); background:var(--sky-soft);}
+  .lens-badge.praxeologique{color:var(--accent); background:var(--accent-soft);}
+  .named-space-hint{color:var(--muted); font-size:13px; max-width:64ch; margin:2px 0 18px;}
+
+  .sub-head{display:flex; align-items:center; gap:8px; margin:22px 0 10px;}
+  .sub-head.first{margin-top:2px;}
+  .sub-head.closing{margin-top:40px; padding-top:24px; border-top:1px solid var(--border);}
+  .sub-head.closing .letter{border-color:var(--accent-deep); color:var(--accent-deep);}
+  .sub-head.closing h4{color:var(--accent-deep); font-weight:600;}
+  .sub-head .letter{
+    display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%;
+    border:1.5px solid var(--border); color:var(--muted); font-size:9.5px; font-family:var(--mono); flex:none;
+  }
+  .sub-head h4{margin:0; font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--mono); font-weight:500; color:var(--muted);}
+
+  /* analyse phénoménologique — deux sous-groupes visuellement distincts (poïétique / praxéologique) sous une seule rubrique */
+  .analyse-lensgroup{margin:20px 0 6px;}
+  .analyse-lensgroup:first-of-type{margin-top:6px;}
+  .analyse-lensgroup-head{display:flex; align-items:center; gap:8px; margin-bottom:11px;}
+  .analyse-lensgroup-head .dot{width:9px; height:9px; border-radius:50%; flex:none;}
+  .analyse-lensgroup-head .dot.poietique{background:var(--sky);}
+  .analyse-lensgroup-head .dot.praxeologique{background:var(--accent);}
+  .analyse-lensgroup-head h4{margin:0; font-size:12px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--mono); font-weight:600;}
+  .analyse-lensgroup-head h4.poietique{color:var(--sky);}
+  .analyse-lensgroup-head h4.praxeologique{color:var(--accent);}
+
+  /* compilation — extrait de l'écriture, en amont de la synthèse générée */
+  .compil-source-label{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px;}
+  .compil-source{
+    border:1px dashed var(--border); border-radius:4px; padding:15px 17px 13px; background:var(--bg-soft);
+    font-family:var(--serif); font-size:15.5px; line-height:1.75; color:var(--ink); white-space:pre-wrap;
+    max-height:280px; overflow-y:auto; margin-bottom:22px;
+  }
+  .compil-source.empty{font-style:italic; color:var(--muted); font-size:13.5px; font-family:var(--sans);}
+
+  /* A — écrire : grande page blanche */
+  .space-metabar{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:12px;}
+  .a-dates{display:flex; gap:18px; flex-wrap:wrap;}
+  .a-datefield{display:flex; flex-direction:column; gap:4px;}
+  .a-datefield label{font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);}
+  .a-datefield input{
+    font-family:var(--mono); font-size:12.5px; color:var(--ink); border:1px solid var(--border);
+    border-radius:4px; padding:6px 8px; background:var(--bg-soft); width:142px;
+  }
+  .space-canvas{border:1px solid var(--border); border-radius:6px; background:var(--surface-2); margin-bottom:14px; box-shadow:var(--elev-inset);}
+  .space-canvas textarea{
+    display:block; width:100%; min-height:230px; border:none; background:transparent; resize:vertical;
+    padding:22px 24px; font-family:var(--serif); font-weight:400; font-size:17px; line-height:1.75; color:var(--ink); outline:none;
+  }
+  .space-canvas textarea:focus{outline:2px solid var(--accent); outline-offset:-2px; border-radius:6px;}
+  .space-canvas textarea::placeholder{color:var(--muted); font-style:italic;}
+  .canvas-actions{display:flex; justify-content:flex-end; margin-bottom:18px;}
+
+  .doc-intake-bar{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+    border:1px dashed var(--border); border-radius:4px; padding:12px 15px; margin:0 0 16px; background:var(--bg-soft);
+  }
+  .doc-intake-bar h4{margin:0; font-size:11px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--mono); font-weight:500; color:var(--muted);}
+  .doc-intake-bar .add-btn{flex:none; white-space:nowrap;}
+  .doc-queue{display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px; margin:0 0 20px;}
+  .doc-card{border:1px solid var(--border-strong); border-radius:4px; background:var(--surface); padding:10px; display:flex; flex-direction:column; gap:8px; box-shadow:var(--elev-1);}
+  .doc-thumb{width:100%; height:105px; object-fit:cover; border-radius:3px; background:var(--surface-2);}
+  .doc-file-badge{
+    width:100%; height:105px; border-radius:3px; background:var(--surface-2);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.05em; color:var(--muted);
+  }
+  .doc-media{width:100%;}
+  audio.doc-media{height:32px;}
+  .doc-text-preview{font-size:12px; color:var(--ink); font-style:italic; line-height:1.5; margin:0; max-height:76px; overflow:hidden;}
+  .doc-text-preview.empty{color:var(--muted); font-style:normal;}
+  .doc-meta{display:flex; flex-direction:column; gap:6px;}
+  .doc-name{font-family:var(--mono); font-size:10px; color:var(--muted); word-break:break-all;}
+  .doc-actions{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+  .doc-actions .add-btn{font-size:10.5px; padding:4px 8px;}
+  .doc-actions .doc-discard{font-size:10.5px; padding:4px 2px;}
+  .doc-preview-box{border:1px solid var(--border); border-radius:4px; padding:10px; background:var(--bg-soft); margin-bottom:2px;}
+  .doc-preview-box .doc-name{margin-top:6px;}
+
+  /* ---------- sessions (une étape accumule plusieurs sessions d'écriture-création) ---------- */
+  .session-manuscript-confirmed{
+    border:1px solid var(--border); border-radius:4px; padding:10px 12px; background:var(--bg-soft);
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px;
+  }
+  .session-manuscript-confirmed .doc-name{margin-top:0;}
+  .session-manuscript-confirmed .sm-actions{display:flex; gap:6px; flex:none;}
+  .sessions-list-label{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:30px 0 14px; display:flex; align-items:center; gap:8px;}
+  .sessions-list-label::after{content:""; flex:1; height:1px; background:var(--border);}
+  .session-card{
+    border:1px solid var(--border-strong); border-radius:6px; background:var(--surface);
+    padding:20px 22px 22px; margin-bottom:24px; box-shadow:var(--elev-1);
+  }
+  .session-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px;}
+  .session-head .session-date{font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+  .session-manuscript-tag{
+    font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em;
+    border:1px solid var(--border); border-radius:2px; padding:1px 6px; color:var(--muted); background:var(--surface-2);
+  }
+  details.manuscript-details{border:1px solid var(--border); border-radius:4px; background:var(--bg-soft); margin-bottom:14px;}
+  details.manuscript-details summary{cursor:pointer; padding:8px 11px; font-family:var(--mono); font-size:10.5px; color:var(--muted); list-style:none;}
+  details.manuscript-details summary::-webkit-details-marker{display:none;}
+  details.manuscript-details summary::before{content:"▸  ";}
+  details.manuscript-details[open] summary::before{content:"▾  ";}
+  details.manuscript-details .doc-text-preview{padding:0 12px 11px; max-height:none;}
+  .session-temoignage{font-family:var(--serif); font-size:15.5px; line-height:1.72; color:var(--ink); white-space:pre-wrap; margin:0 0 4px;}
+  .session-temoignage.empty{font-style:italic; color:var(--muted); font-size:13.5px; font-family:var(--sans);}
+  .session-no-manuscript{font-size:12px; color:var(--muted); font-style:italic; margin:0 0 14px;}
+
+  .add-btn{
+    font-family:var(--mono); font-size:10.5px; border:1px solid var(--border); background:var(--surface);
+    border-radius:4px; padding:5px 9px; cursor:pointer; color:var(--ink);
+  }
+  .add-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .add-btn:disabled{opacity:.45; cursor:not-allowed;}
+
+  .journal-list{display:flex; flex-direction:column; gap:2px; border-top:1px solid var(--border); max-width:760px;}
+  .journal-entry{padding:11px 0; border-bottom:1px solid var(--border); font-size:14px;}
+  .journal-entry .d{font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:4px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .journal-entry .file-tag{
+    font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    border:1px solid var(--border); border-radius:2px; padding:0px 5px; color:var(--muted);
+  }
+  .journal-entry p{margin:0;}
+  .empty-col{font-size:12.5px; color:var(--muted); font-style:italic; padding:6px 0 16px;}
+
+  .entry-new{animation:settle 900ms ease-out;}
+  @keyframes settle{
+    0%{background:rgba(var(--glow),.24); }
+    100%{background:transparent;}
+  }
+  @media (prefers-reduced-motion: reduce){ .entry-new{animation:none;} }
+
+  /* ---------- expérience d'écriture — lightweight self-assessment widget ---------- */
+  .exp-space{border:1px dashed var(--border); border-radius:6px; background:var(--bg-soft); padding:17px 20px 19px; margin-bottom:26px;}
+  .exp-space.exp-space-global{border-style:solid; border-color:var(--border-strong); background:var(--surface); box-shadow:var(--elev-1);}
+  .exp-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:3px;}
+  .exp-head h4{margin:0; font-size:13.5px; font-weight:700; color:var(--ink); font-family:var(--sans);}
+  .exp-space-global .exp-head h4{color:var(--accent-deep); font-size:15px; max-width:56ch;}
+  .exp-badge{font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); border:1px solid var(--border); padding:2px 7px; border-radius:2px; flex:none;}
+  .exp-hint{color:var(--muted); font-size:12.5px; max-width:64ch; margin:2px 0 16px;}
+  .exp-planes{display:flex; flex-direction:column; gap:11px; margin-bottom:14px;}
+  .exp-plane{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .exp-plane-label{font-family:var(--sans); font-size:12.5px; font-weight:600; color:var(--ink); flex:none; width:96px;}
+  .exp-plane-hint{display:block; font-weight:400; font-size:10.5px; color:var(--muted); font-family:var(--sans); margin-top:1px; max-width:200px; line-height:1.35;}
+  .exp-scale{display:flex; gap:5px;}
+  .exp-chip{
+    width:25px; height:25px; border-radius:50%; border:1px solid var(--border); background:var(--surface);
+    color:var(--muted); font-family:var(--mono); font-size:10.5px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; flex:none; padding:0;
+  }
+  .exp-chip:hover{border-color:var(--accent); color:var(--accent);}
+  .exp-chip.sel{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .exp-note{min-height:56px; font-size:13px; background:var(--surface); margin-bottom:12px;}
+  .exp-footer{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:2px;}
+  .exp-history{display:flex; flex-direction:column; gap:1px; border-top:1px solid var(--border); margin-top:15px;}
+  .exp-entry{padding:9px 0; border-bottom:1px solid var(--border);}
+  .exp-entry-d{font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:5px;}
+  .exp-entry-scores{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:5px;}
+  .exp-score-tag{font-family:var(--mono); font-size:9.5px; color:var(--muted); border:1px solid var(--border); padding:1px 7px; border-radius:10px;}
+  .exp-entry-note{font-size:12.5px; color:var(--ink); font-style:italic; margin:0;}
+  @media (max-width:640px){ .exp-plane-label{width:auto;} }
+
+  /* B — retour / analyse poïétique */
+  .retour-controls{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px;}
+  .lens-check{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); font-family:var(--mono);}
+  .retour-status{border:1px dashed var(--border); border-radius:4px; padding:11px 13px; margin:0 0 14px; background:var(--bg-soft); font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .retour-status.err{color:var(--accent);}
+  .retour-status button{font-family:var(--mono); font-size:10.5px; border:1px solid var(--border); background:var(--surface); border-radius:3px; padding:4px 9px; cursor:pointer; color:var(--ink);}
+  .retour-status button:hover{border-color:var(--accent); color:var(--accent);}
+  .retour-note{font-size:11.5px; color:var(--muted); font-style:italic; margin:0 0 14px; max-width:62ch;}
+
+  /* shared element card — retour + auto-poïétique response */
+  .element-card{border:1px solid var(--border-strong); border-radius:4px; background:var(--surface); padding:13px 15px; margin-bottom:12px; box-shadow:var(--elev-1);}
+  .element-card.static{margin-bottom:0;}
+  .element-tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;}
+  .element-tags .reg{
+    font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--muted); border:1px solid var(--border); padding:1px 6px; border-radius:2px;
+  }
+  .element-tags .tag{
+    font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--muted); background:var(--surface-2); border:1px solid var(--border); padding:1px 6px; border-radius:2px;
+  }
+  /* le lens-tag reprend la couleur du lens-badge de l'espace — orange = praxéologique, bleu ciel = poïétique */
+  .element-tags .lens-tag{
+    font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    padding:1px 6px; border-radius:2px; border:1px solid currentColor;
+    color:var(--accent);
+  }
+  .element-tags .lens-tag.poietique{color:var(--sky);}
+  .element-text{font-family:var(--sans); font-size:14.5px; line-height:1.6; color:var(--ink); margin:0 0 10px;}
+  .element-pending{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:10px;}
+  .auto-buttons{display:flex; gap:8px; flex-wrap:wrap;}
+  .ab-btn{font-family:var(--mono); font-size:10.5px; border:1px solid var(--border); background:var(--surface-2); border-radius:12px; padding:5px 11px; cursor:pointer; color:var(--ink);}
+  .ab-btn.consentir:hover{border-color:var(--stage-done); color:var(--stage-done);}
+  .ab-btn.commenter:hover{border-color:var(--accent); color:var(--accent);}
+  .ab-btn.ajuster:hover{border-color:var(--sky); color:var(--sky);}
+  .element-response{border-top:1px solid var(--border); margin-top:2px; padding-top:10px; display:flex; flex-direction:column; gap:4px;}
+  .element-response .resp-kind{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; padding:1px 7px; border-radius:10px; align-self:flex-start;}
+  .element-response.consentir .resp-kind{background:var(--stage-done-soft); color:var(--stage-done);}
+  .element-response.commenter .resp-kind{background:var(--accent-soft); color:var(--accent);}
+  .element-response.ajuster .resp-kind{background:var(--sky-soft); color:var(--sky);}
+  .element-response .resp-date{font-family:var(--mono); font-size:10px; color:var(--muted);}
+  .element-response .resp-text{font-style:italic; font-size:13.5px; color:var(--ink); margin:2px 0 0;}
+
+  /* D / récit final — literary card */
+  .recit-card{
+    position:relative; margin:0 0 6px; border:1px solid var(--border-strong); border-radius:4px;
+    background:var(--surface); padding:22px 22px 20px; overflow:hidden; box-shadow:var(--elev-2);
+  }
+  .recit-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(to right, var(--accent), var(--sky));
+  }
+  /* méta-analyse (phase 6) — un segment par lens, liseré du haut en teinte unique plutôt qu'en dégradé */
+  .recit-card.lens-poietique::before{background:var(--sky);}
+  .recit-card.lens-praxeologique::before{background:var(--accent);}
+  .recit-card .lbl{
+    display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+  }
+  .recit-card .lbl-actions{display:flex; gap:8px;}
+  .recit-card .txt{font-size:16.5px; line-height:1.65; color:var(--ink); max-width:64ch; white-space:pre-wrap;}
+  .recit-card .txt.empty{font-style:italic; color:var(--muted); font-size:14px;}
+  .recit-edit-btn{
+    font-family:var(--mono); font-size:10.5px; border:1px solid var(--border); background:var(--surface-2);
+    border-radius:3px; padding:5px 9px; cursor:pointer; color:var(--ink); flex:none;
+  }
+  .recit-edit-btn:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* journal complet */
+  .journal-phase{margin-bottom:44px;}
+  .journal-phase .ch-head{display:flex; align-items:baseline; gap:12px; margin-bottom:2px;}
+  .journal-phase .ch-num{font-family:var(--mono); color:var(--muted); font-size:12.5px;}
+  .journal-phase h3{font-size:21px; margin:0; color:var(--accent-deep); font-weight:700;}
+  .journal-phase .ch-space-label{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:18px 0 6px;}
+
+  /* méta-analyse phénoménologique (phase 6) */
+  .recit-movement{margin:0 0 30px; max-width:66ch;}
+  .recit-movement .rm-head{display:flex; align-items:baseline; gap:10px; margin-bottom:10px;}
+  .recit-movement .rm-num{font-family:var(--mono); font-size:11.5px; color:var(--muted);}
+  .recit-movement h3{font-size:16.5px; margin:0; color:var(--ink); font-weight:700;}
+  .recit-movement .rm-text{font-size:14.5px; line-height:1.7; color:var(--ink); white-space:pre-wrap;}
+  .recit-movement .rm-text.empty{font-style:italic; color:var(--muted); font-size:13.5px;}
+
+  /* praxéologie */
+  .praxeologie-intro{max-width:64ch; font-size:14.5px; color:var(--muted); line-height:1.6; margin:0 0 28px;}
+  .principle-list{display:flex; flex-direction:column; gap:2px; border-top:1px solid var(--border); max-width:760px;}
+  .principle{display:flex; gap:20px; padding:17px 0; border-bottom:1px solid var(--border);}
+  .principle .p-meta{flex:none; width:148px; display:flex; flex-direction:column; gap:6px;}
+  .principle .p-date{font-family:var(--mono); font-size:10px; color:var(--muted);}
+  .principle .p-type{
+    align-self:flex-start; font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--accent); background:var(--accent-soft); padding:2px 6px; border-radius:2px;
+  }
+  .principle .p-stage{
+    align-self:flex-start; font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--muted); border:1px solid var(--border); padding:2px 6px; border-radius:2px;
+  }
+  .principle .p-status{
+    align-self:flex-start; font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em;
+    padding:2px 6px; border-radius:2px; border:1px solid; cursor:pointer;
+  }
+  .principle .p-status.ouvert{background:var(--accent-soft); color:var(--accent); border-color:var(--accent);}
+  .principle .p-status.resolu{background:var(--stage-done-soft); color:var(--stage-done); border-color:var(--stage-done);}
+  .principle .p-status:hover{opacity:.8;}
+  .principle .p-text{font-size:14.5px; line-height:1.6; color:var(--ink); max-width:56ch;}
+  .praxeologie-add{margin:20px 0 0;}
+  .praxeologie-select{
+    font-family:var(--sans); font-size:13px; color:var(--ink); background:var(--bg-soft);
+    border:1px solid var(--border); border-radius:4px; padding:8px 10px; width:100%; margin-bottom:4px;
+  }
+  @media (max-width:640px){ .principle{flex-direction:column; gap:8px;} .principle .p-meta{flex-direction:row; align-items:center; width:auto;} }
+
+  /* mes projets — portfolio */
+  .project-current{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    border:1px solid var(--border-strong); border-radius:4px; background:var(--surface);
+    padding:15px 17px; margin-bottom:26px; box-shadow:var(--elev-1);
+  }
+  .project-list{display:flex; flex-direction:column; gap:2px; border-top:1px solid var(--border);}
+  .project-row{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:15px 0; border-bottom:1px solid var(--border);}
+  .pr-info{display:flex; flex-direction:column; gap:3px;}
+  .pr-title{font-family:var(--sans); font-weight:700; font-size:14.5px; color:var(--ink);}
+  .pr-meta{font-family:var(--mono); font-size:10.5px; color:var(--muted);}
+  .pr-actions{display:flex; align-items:center; gap:10px; flex:none;}
+  @media (max-width:640px){ .project-current, .project-row{flex-direction:column; align-items:flex-start;} }
+
+  /* about panel */
+  .about-copy{max-width:64ch; font-size:15px;}
+  .about-copy p{margin:0 0 16px;}
+  .about-copy .kicker{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--accent); margin-bottom:10px;}
+  .method-steps{display:flex; flex-direction:column; gap:20px; margin:22px 0; border-left:2px solid var(--border); padding-left:18px;}
+  .method-steps .ms-block{display:flex; flex-direction:column; gap:6px;}
+  .method-steps .ms{font-size:13.5px;}
+  .method-steps .ms b{font-size:15px; color:var(--accent-deep);}
+
+  /* composer overlay */
+  .overlay{
+    position:fixed; inset:0; background:rgba(var(--shadow),.42);
+    display:flex; justify-content:flex-end; z-index:50;
+    opacity:0; pointer-events:none; transition:opacity .18s ease;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .panel{
+    width:min(420px, 92vw); height:100%; background:var(--surface);
+    border-left:1px solid var(--border);
+    padding:26px 26px 24px;
+    display:flex; flex-direction:column; gap:16px;
+    transform:translateX(16px); transition:transform .2s ease;
+    box-shadow:-18px 0 30px -20px rgba(var(--shadow),.35);
+    overflow-y:auto;
+  }
+  .overlay.open .panel{transform:translateX(0);}
+  .panel-head{display:flex; justify-content:space-between; align-items:center;}
+  .panel-head h3{margin:0; font-size:17px; color:var(--ink);}
+  .close-btn{background:none; border:none; font-size:19px; cursor:pointer; color:var(--muted); line-height:1; padding:2px 4px;}
+  .close-btn:hover{color:var(--ink);}
+
+  .type-chips{display:flex; gap:7px; flex-wrap:wrap;}
+  .chip{
+    font-family:var(--mono); font-size:11px; padding:5px 10px; border-radius:12px; border:1px solid var(--border);
+    background:var(--surface-2); cursor:pointer; color:var(--muted);
+  }
+  .chip.sel{background:var(--sky); border-color:var(--sky); color:var(--surface);}
+  #praxTypeChips .chip.sel{background:var(--accent); border-color:var(--accent);}
+  .prompt-hint{font-size:12.5px; color:var(--muted); font-style:italic; min-height:0;}
+  .vt{display:block; font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:6px;}
+
+  textarea{
+    width:100%; min-height:120px; resize:vertical; border:1px solid var(--border); border-radius:4px;
+    padding:10px 12px; font-family:var(--sans); font-size:14px; background:var(--bg-soft); color:var(--ink);
+  }
+  input[type="text"], input[type="date"]{
+    font-family:var(--sans); font-size:13px; color:var(--ink); background:var(--bg-soft);
+    border:1px solid var(--border); border-radius:4px; padding:8px 10px; width:100%;
+  }
+  textarea:focus, .add-btn:focus-visible, .spine-item:focus-visible, .chip:focus-visible, .rail-link:focus-visible, .save-btn:focus-visible, .wheel-node:focus-visible, .ab-btn:focus-visible, input:focus-visible{
+    outline:2px solid var(--accent); outline-offset:1px;
+  }
+  .save-btn{
+    margin-top:auto; background:var(--accent); color:var(--accent-ink); border:none; border-radius:4px;
+    padding:12px; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .save-btn:hover{filter:brightness(1.05);}
+  .save-btn:disabled{opacity:.45; cursor:not-allowed;}
+
+  /* confirm modal */
+  .confirm-overlay{
+    position:fixed; inset:0; background:rgba(var(--shadow),.42); z-index:80;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    opacity:0; pointer-events:none; transition:opacity .15s ease;
+  }
+  .confirm-overlay.open{opacity:1; pointer-events:auto;}
+  .confirm-box{
+    width:min(380px, 100%); background:var(--surface); border:1px solid var(--border); border-radius:5px;
+    padding:22px; box-shadow:0 18px 40px -12px rgba(var(--shadow),.45);
+  }
+  .confirm-box p{margin:0 0 18px; font-size:14px; line-height:1.6; color:var(--ink);}
+  .confirm-actions{display:flex; justify-content:flex-end; align-items:center; gap:10px;}
+  .confirm-actions .save-btn{margin-top:0; padding:9px 16px;}
+
+  /* data export/import + status line */
+  .io-toast{font-family:var(--mono); font-size:10px; color:var(--muted); padding:2px 6px; min-height:14px;}
+  .io-toast.err{color:var(--accent);}
+
+  [hidden]{display:none !important;}
+
+  @media (max-width: 860px){
+    .app{grid-template-columns:1fr;}
+    .rail{
+      flex-direction:row; align-items:center; overflow-x:auto; padding:14px; gap:16px;
+      position:sticky; top:0; z-index:10;
+    }
+    .wordmark, .project-card, .rail-secondary, .rail-foot{display:none;}
+    nav.spine{flex-direction:row;}
+    .spine-line{display:none;}
+    main{padding:20px 16px 60px;}
+    .two-col-preview{grid-template-columns:1fr;}
+  }
+</style>
+
+<div class="app">
+  <aside class="rail">
+    <div class="wordmark">
+      <span class="flame">🕯️</span>
+      <span>
+        <span class="wordmark-word">Scriptus Viator</span>
+        <span class="tagline">Guide de mon voyage d'écriture</span>
+        <span class="tagline-scopes">Récit de projet · Récit de vie · Legs immatériel</span>
+      </span>
+    </div>
+
+    <div class="project-card" id="projectCard"></div>
+
+    <nav class="spine" id="spine" aria-label="Étapes du projet"></nav>
+    <div class="spine-cycle-note" id="spineCycleNote"></div>
+
+    <div class="rail-secondary">
+      <button class="rail-link" data-view="journal">📜 Journal complet</button>
+      <button class="rail-link" data-view="praxeologie">🧭 Praxéologie</button>
+      <button class="rail-link" data-view="projects">📚 Mes projets</button>
+      <button class="rail-link" data-view="about">◈ La méthode</button>
+      <button class="rail-link" data-view="welcome">🕯️ Présentation</button>
+    </div>
+
+    <div class="rail-foot">
+      <button class="reset-link" id="newProjectBtn">✎ Commencer un nouveau projet</button>
+      <button class="reset-link" id="exportBtn">⬇ Exporter une sauvegarde</button>
+      <button class="reset-link" id="importBtn">⬆ Importer une sauvegarde</button>
+      <p class="io-toast" id="ioToast"></p>
+    </div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<input type="file" id="docFileInput" hidden accept="image/*,audio/*,video/*,.txt,.md,text/plain,.pdf,.doc,.docx,.odt,.rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/rtf">
+<input type="file" id="importFileInput" hidden accept=".json,application/json">
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <p id="confirmMessage"></p>
+    <div class="confirm-actions">
+      <button class="reset-link" id="confirmCancel">Annuler</button>
+      <button class="save-btn" id="confirmOk" style="width:auto;">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="panel" id="panel">
+    <div class="panel-head">
+      <h3 id="panel-title">Ajouter</h3>
+      <button class="close-btn" id="closePanel" aria-label="Fermer">✕</button>
+    </div>
+    <div class="crumb" id="composerStage" style="margin-bottom:-4px;"></div>
+    <div id="panelPreview" hidden></div>
+    <p class="prompt-hint" id="panelHint" hidden></p>
+
+    <div id="praxeologieFields" hidden>
+      <span class="vt">Nature de l'occasion</span>
+      <div class="type-chips" id="praxTypeChips"></div>
+      <p class="prompt-hint" id="praxTypeHint"></p>
+
+      <span class="vt" style="margin-top:12px;">Repéré à quelle étape ?</span>
+      <select id="praxStageSelect" class="praxeologie-select"></select>
+    </div>
+
+    <div id="newProjectFields" hidden>
+      <p class="prompt-hint" style="margin-top:-4px;">Le projet actuellement affiché est conservé — tu le retrouveras dans « 📚 Mes projets » — puis remplacé ici par celui-ci. Ta praxéologie, elle, reste commune à tous les projets.</p>
+      <span class="vt">Titre du projet poïétique</span>
+      <input type="text" id="npPoieticTitle" placeholder="Ex. : À TITRE D'EXEMPLE" style="margin-bottom:14px;">
+      <span class="vt">Genre</span>
+      <input type="text" id="npGenre" placeholder="Ex. : Roman, récit, essai…" style="margin-bottom:14px;">
+      <span class="vt">Titre de travail (sous-titre)</span>
+      <input type="text" id="npWorkingTitle" placeholder="Facultatif" style="margin-bottom:14px;">
+      <span class="vt">Débuté</span>
+      <input type="text" id="npStarted" placeholder="Ex. : septembre 2026" style="margin-bottom:14px;">
+      <span class="vt">Ton nom</span>
+      <input type="text" id="npAuthorName" placeholder="Facultatif — pour signer ton récit" style="margin-bottom:14px;">
+      <span class="vt">Lieu</span>
+      <input type="text" id="npPlace" placeholder="Facultatif — Ex. : Montréal, Québec" style="margin-bottom:14px;">
+    </div>
+
+    <textarea id="entryText" placeholder="Écrire ici…"></textarea>
+    <button class="save-btn" id="saveEntry" disabled>Enregistrer</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth.js/1.6.0/mammoth.browser.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var DEFAULT_PROJECT = {
+    poieticTitle: "Mon projet créateur",
+    workingTitle: "",
+    genre: "",
+    started: "",
+    authorName: "",
+    place: "",
+    isDemo: false
+  };
+
+  /* ---------- six étapes, chacune (sauf la sixième) avec un espace d'écriture unique ----------
+     Deux bornes passives, ressenties, qui encadrent le cycle (Inception, Post-Partum — l'une
+     l'envers de l'autre) autour de trois moments actifs (Gestation, Création, Mise au monde),
+     le tout refermé par la récolte (Ce qu'il en naît). Chaque étape engage les quatre mêmes
+     registres neurophénoménologiques — physique, psychique, émotionnel, intuitif — mais pas au
+     même titre : un registre y domine, sans jamais rendre les autres inactifs. ---------- */
+  var STAGES = [
+    {key:"inception", num:1, name:"Inception", subtitle:"Émergence de l'idée", status:"done",
+     blurb:"L'impulsion. Activation dans la chair d'une pulsion de créer.",
+     full:[
+       "En amont de l'idée d'un projet, une sensation s'anime dans le corps, une sorte d'intuition qui petit à petit cherche à se manifester à la conscience par le biais d'une vision, d'une idée mise en scène pour donner sens à ce qui étant de l'ordre du ressenti n'est encore qu'abstrait.",
+       "À cette étape dite de l'Inception, il est question d'identifier l'expérience de cette intuition (pulsion physique) et sa première mise en forme en termes d'idéation. Il est question d'identifier par la mémoire et les sensations encore engrammées dans le corps les réalités subjectives et événementielles qui ont contribué à déclencher l'essor d'une vie nouvelle et de son à-venir.",
+       "Le registre intuitif et intéroceptif domine ici : le corps perçoit avant que l'esprit ne conceptualise. Ce registre reste actif tout au long du cycle, mais nulle part autant qu'ici — et à son envers, au Post-Partum, qui referme le cycle comme un fait passif du même ordre.",
+       "Ici, comme à chaque phase, l'écriture du récit crée la mise en forme d'un témoignage intime qui sert à l'identification de marqueurs existentiels (poïétiques) et pratiques (praxéologiques). L'assemblage des expériences contenus à même le récit couplé à la double analyse phénoménologique et l'auto-évaluation du processus d'écriture stimulent l'acquisition d'apprentissages autodidactes transmissibles. Ce nouveau savoir peut ainsi être consolidé à même la conscience en termes de Sagesse : Savoir né de l'expérience."
+     ]},
+    {key:"gestation", num:2, name:"Gestation", subtitle:"Préparation du terrain", status:"done",
+     blurb:"La mise en place. Itinéraire, logistique, consolidation — le terrain qui prédispose à la Création.",
+     full:[
+       "La gestation c'est le temps de préparation matériel du projet — un fait actif qui prédispose à la Création, rendu possible parce que l'effet d'Inception est trop probant pour être ignoré. Une sortie de la phase pure d'idéation pour interagir avec la création d'un itinéraire de projet, l'exploration et la consolidation logistique (tant humaine, financière, matérielle, géographique, légal, etc.). Il est question de retracer le chemin et d'identifier les différents mécanismes à l'œuvre : le raisonnement et les connaissances stratégiques, l'intuition et les synchronicités, la chance et la malchance.",
+       "Éventuellement identifier la double expérience psycho-phénoménologique actualiser dans l'interactivité entre la conscience et le corps en termes d'expériences intuitives.",
+       "Le registre psychique domine ici : l'entendement qui organise, planifie et consolide le terrain, avant que l'activité de création elle-même ne s'engage.",
+       "Ici, comme à chaque phase, l'écriture du récit crée la mise en forme d'un témoignage intime qui sert à l'identification de marqueurs existentiels (poïétiques) et pratiques (praxéologiques). L'assemblage des expériences contenus à même le récit couplé à la double analyse phénoménologique et l'auto-évaluation du processus d'écriture stimulent l'acquisition d'apprentissages autodidactes transmissibles. Ce nouveau savoir peut ainsi être consolidé à même la conscience en termes de Sagesse : Savoir né de l'expérience."
+     ]},
+    {key:"creation", num:3, name:"Création", subtitle:"Écriture du récit", status:"done",
+     blurb:"Le corps à corps. Prototypes, jets, relectures — recadrer sans cesse vers l'intention pure.",
+     full:[
+       "La Création est l'activité fondamentale du cycle — la plus exhaustive. Ce n'est plus l'idée qui se prépare, ni le terrain qui se consolide, mais l'œuvre elle-même qui s'élabore : le texte s'écrit, se reprend, se refait, à travers ses versions successives, sous l'influence parfois d'un directeur littéraire ou de lecteurs-testeurs.",
+       "Mandat existentiel de cette étape : apprendre à recadrer sans cesse vers la pureté d'intention initiale — nuancer « une bonne idée » de « la bonne idée », sans attachement à ce qui ne crée que du momentum.",
+       "Aucun registre n'y domine seul, à la différence des autres étapes : les quatre plans de l'expérience d'écriture — physique, psychique, émotionnel, intuitif — s'y activent ensemble et dans la durée, ce qui en fait l'étape la plus exigeante du cycle. Le corps qui tient la posture et la fatigue de l'écriture, l'esprit qui structure et se souvient, le cœur qui porte la charge du contenu, l'intuition qui guide les choix qui échappent à la raison.",
+       "Ici, comme à chaque phase, l'écriture du récit crée la mise en forme d'un témoignage intime qui sert à l'identification de marqueurs existentiels (poïétiques) et pratiques (praxéologiques). L'assemblage des expériences contenus à même le récit couplé à la double analyse phénoménologique et l'auto-évaluation du processus d'écriture stimulent l'acquisition d'apprentissages autodidactes transmissibles. Ce nouveau savoir peut ainsi être consolidé à même la conscience en termes de Sagesse : Savoir né de l'expérience."
+     ]},
+    {key:"mise-au-monde", num:4, name:"Mise au monde", subtitle:"Actualisation du projet", status:"done",
+     blurb:"L'accouchement. L'œuvre quitte le refuge intérieur pour rencontrer le monde — et l'ego commence à s'en détacher.",
+     full:[
+       "La Mise au monde, pour un texte, c'est la transformation d'un tapuscrit/manuscrit en un objet-livre — ou, plus largement, le moment où le projet quitte le refuge intérieur pour rencontrer le monde. Cela suppose une interaction entre l'écrivain et un éditeur, la question des droits d'auteur, puis d'un directeur littéraire et d'un correcteur, et l'effet des phases de réécriture sous l'influence d'avis externes, puis l'impact d'une équipe de production sur l'allure physique du livre. Toutes ces étapes sont exigeantes pour l'écrivain et peuvent pervertir la pureté d'intention originelle, et peuvent exacerber le besoin de contrôle sur sa progéniture artistique — le texte pas encore livre.",
+       "Cette interaction avec le monde extérieur active une dimension de lâcher-prise et de perte de contrôle : l'œuvre, une fois reçue par d'autres, ne se laisse plus posséder tout à fait de la même manière. Cette perte de contrôle inclut ce qui s'apparente à un deuil — le détachement de l'ego, cette faculté neurologique constituée de l'entendement, la cognition, la mémoire, l'imagination et la sentimentalité, envers sa propre activité : l'idéation.",
+       "L'ego doit encore mettre à terme son projet. La fin d'une course, la fin de la création d'un poème lui demande de reconnaître la fin, de l'accepter et d'y adhérer — consentir aux faits, reconnaître son attachement à l'expérience d'idéation, accepter de l'arrêter, et vivre l'agonie de patience qui naît du souhait ontologique propre à une prochaine Inception. Mourir à son projet, c'est aussi mourir un peu à soi : une agonie de décomposition, comme procédé naturel vers un état de compost fertile propre à ce qu'il en naît.",
+       "Le registre émotionnel domine ici : la charge de l'exposition, du lâcher-prise, de la perte de contrôle face au monde extérieur.",
+       "Ici, comme à chaque phase, l'écriture du récit crée la mise en forme d'un témoignage intime qui sert à l'identification de marqueurs existentiels (poïétiques) et pratiques (praxéologiques). L'assemblage des expériences contenus à même le récit couplé à la double analyse phénoménologique et l'auto-évaluation du processus d'écriture stimulent l'acquisition d'apprentissages autodidactes transmissibles. Ce nouveau savoir peut ainsi être consolidé à même la conscience en termes de Sagesse : Savoir né de l'expérience."
+     ]},
+    {key:"post-partum", num:5, name:"Post-Partum", subtitle:"Le temps mort de la fin", status:"done",
+     blurb:"Le corps, encore — l'envers de la médaille d'Inception. Un temps mort fertile, quelles que soient les sensations qu'il porte.",
+     full:[
+       "Le Post-Partum s'actualise dès la fin. C'est l'instant du fil d'arrivée franchi, la fin brutale de l'anticipation. Le corps change radicalement : il arrête subitement sa production de dopamine et redistribue celle qui le gorgeait encore. Dans le contexte des projets à long terme, cela peut se vivre comme un vide psychique, une sorte de déliaison existentielle, un temps mort au cœur d'une fête — une sorte d'état de choc où la conscience n'arrive pas tout de suite à palper la réalité.",
+       "C'est l'envers de la médaille d'Inception : un fait passif, ressenti, qui referme le cycle comme l'Inception l'avait ouvert. L'auteur n'a plus de lien fonctionnel avec l'œuvre — elle vit désormais sa propre vie, dans le marché de la diffusion et de l'édition, dans le rapport aux médias, aux critiques, aux lecteurs.",
+       "C'est le silence qui commence dès après que l'arbre tombe, et juste avant qu'il ne commence à se décomposer. La vie vit sans racine pour la nourrir encore — un temps mort, fertile comme tout le reste, quel que soit le sentiment qu'il porte.",
+       "Le registre intuitif et intéroceptif domine de nouveau ici, comme à l'Inception : le corps sait, avant que l'entendement n'ait pu y arrimer sa réalité.",
+       "Ici, comme à chaque phase, l'écriture du récit crée la mise en forme d'un témoignage intime qui sert à l'identification de marqueurs existentiels (poïétiques) et pratiques (praxéologiques). L'assemblage des expériences contenus à même le récit couplé à la double analyse phénoménologique et l'auto-évaluation du processus d'écriture stimulent l'acquisition d'apprentissages autodidactes transmissibles. Ce nouveau savoir peut ainsi être consolidé à même la conscience en termes de Sagesse : Savoir né de l'expérience."
+     ]},
+    {key:"naissance", num:6, name:"Ce qu'il en naît", subtitle:"Nouvelle Inception", status:"current",
+     blurb:"Bilan. Le terreau enrichi, prêt à être ensemencé de nouveau.",
+     full:[
+       "Bilan post-projet. C'est normalement ici que la fécondité nouvelle se réalise : un nouvel espace se dilate, une impulsion de vivre, une remise en mouvement se fait sentir.",
+       "Tout ce qui est mort s'est aussi décomposé — le terreau est prêt, enrichi de son expérience, prêt à se sentir fertile avant d'être ensemencer. Ce temps précède l'Inception : c'est le temps entre la fin d'un cycle de création et le début d'un autre cycle nouveau.",
+       "Le texte intégral — l'écriture des cinq étapes mise bout à bout — et la méta-analyse phénoménologique poïétique et praxéologique qui les relient dans leur ensemble, prennent forme ici. Cette récolte porte sur deux plans à la fois : ce que le contenu même du récit enseigne, et ce que l'expérience de Scriptus Viator elle-même révèle sur la manière de créer. Nommer ce double constat rend possible une nouvelle Inception consciente — car sans cette récolte explicite, l'élan ontologique non résolu tend à se répéter inconsciemment sous une forme nouvelle, comme si le même projet cherchait encore à naître. C'est le temps d'identifier les nouveaux acquis nés de l'expérience. Peut-être même une nouvelle version de soi. Que et qui suis-je devenu ?",
+       "Le registre psychique domine ici : le discernement, la mise en mots de ce qui a été appris.",
+       "Ici, comme à chaque phase, l'écriture du récit crée la mise en forme d'un témoignage intime qui sert à l'identification de marqueurs existentiels (poïétiques) et pratiques (praxéologiques). L'assemblage des expériences contenus à même le récit couplé à la double analyse phénoménologique et l'auto-évaluation du processus d'écriture stimulent l'acquisition d'apprentissages autodidactes transmissibles. En contraste aux phases précédentes, ce nouveau savoir étant intégré, l'écrivain du récit saura partager son génie par le biais de sa gratitude et ainsi il s'offrira comme contrainte la liberté d'une expérience existentielle portée par l'à-venir plutôt que par une idéation du passé."
+     ]}
+  ];
+
+  // Gestes d'attention — la manière dont une observation regarde le matériau.
+  var GESTES = [
+    {key:"constat", label:"Constat", hint:"Ce qui s'est donné à observer, tel quel."},
+    {key:"decouverte", label:"Découvertes", hint:"Ce qui vient de se révéler, non su encore."},
+    {key:"resistance", label:"Nœuds à dénouer", hint:"Ce qui freine, résiste, ou demande à être dénoué."},
+    {key:"discernement", label:"Discernement", hint:"Ce qui commence à se distinguer, à se trier, à se comprendre."}
+  ];
+
+  // Registres de l'expérience — quel plan de l'expérience une observation touche.
+  var REGISTRES = [
+    {key:"corporel", label:"Corps", hint:"Ce que le corps engendre."},
+    {key:"psychique", label:"Psyché", hint:"Ce que la psyché élabore."},
+    {key:"emotionnel", label:"Intuition-Émotion", hint:"Ce que le ressenti révèle."}
+  ];
+
+  // Plans de l'expérience d'écriture — auto-évaluation légère, distincte du registre de l'expérience
+  // ci-dessus (Corps / Psyché / Intuition-Émotion) : ceci porte sur le geste d'écrire lui-même,
+  // pas sur ce que le contenu écrit donne à observer.
+  var EXPERIENCE_PLANES = [
+    {key:"physique", label:"Physique", hint:"Le corps pendant l’écriture — tension, fatigue, aisance, souffle."},
+    {key:"psychique", label:"Psychique", hint:"L’esprit — clarté, confusion, charge mentale de la séance."},
+    {key:"emotionnel", label:"Émotionnel", hint:"Ce qui s’est senti en écrivant — joie, peur, ennui, élan."},
+    {key:"intuitif", label:"Intuitif", hint:"Le fil intuitif — présent, absent, sûr, hésitant."}
+  ];
+
+  var PRAX_TYPES = [
+    {key:"probleme", label:"Problème à solutionner", hint:"Qu'est-ce qui revient, fait obstacle, et demanderait une façon de faire différente ?"},
+    {key:"decouverte", label:"Découverte", hint:"Qu'est-ce qui vient de se reconnaître, à distance, comme un motif — quelque chose qui se répète sans qu'on l'ait encore nommé ?"},
+    {key:"apprentissage", label:"Apprentissage", hint:"Qu'est-ce que ceci confirme ou change dans la façon dont tu comptes t'y prendre la prochaine fois ?"}
+  ];
+
+
+  var WELCOME_KEY = "scriptus-viator-demo-welcome-seen-v1";
+  // ---------- multi-personnes : le slug dans l'URL (?p=<slug>) identifie la personne ----------
+  // Remplace entièrement l'ancien stockage localStorage (projet, entries, praxéologie,
+  // savedProjects) : tout est désormais lu et écrit via l'API backend (voir apiCall() et
+  // bootstrap() plus bas dans ce fichier). Rien n'est créé côté client si le slug est
+  // absent ou inconnu — voir renderInfoScreen() et bootstrap(), tout en bas de ce fichier.
+  var SLUG = (function () {
+    try {
+      return new URLSearchParams(window.location.search).get("p") || "";
+    } catch (e) {
+      return "";
+    }
+  })();
+  var entries = blankEntries(); // rempli par bootstrap() avant le premier rendu
+  var PROJECT = JSON.parse(JSON.stringify(DEFAULT_PROJECT));
+  // La praxéologie et le portfolio des projets archivés sont globaux par personne — décorrélés
+  // du projet actif — plutôt que rattachés à entries.
+  var praxeologie = [];
+  var savedProjects = [];
+  // Notes de coaching écrites par Thierry (admin-person.html), une par étape (incl.
+  // "naissance") — lues seulement ici, jamais écrites depuis l'app de la personne. Remplie
+  // par bootstrap() depuis data.coachingNotes ; absente côté serveur (non loguée) -> {}.
+  var coachingNotes = {};
+  var view = "overview"; // overview | welcome | stage:<key> | journal | praxeologie | projects | about
+  // spaceKey stays "accueil" for the manuscript-intake queue of a session being composed — kept
+  // as a field so the generic (phase,space)-keyed doc-intake machinery (qKey/docQueueHtml/
+  // handleFiles/discardDoc) needs no further change. lens ("poietique"|"praxeologique")
+  // identifies which analyse array an "auto" composer targets; sessionId identifies which
+  // session's analyse (or, for "session-manuscript", which phase's in-progress session draft).
+  var composer = { mode:null, phaseKey:null, spaceKey:"accueil", lens:null, docId:null, sessionId:null, elementId:null, gesture:null, praxType:"apprentissage" };
+  var docQueue = {}; // ephemeral, in-memory only — not persisted across reloads, keyed "<phase>::accueil"
+  // Real File/Blob objects for images that made it into a SAVED session's manuscript, keyed by
+  // session id. In-memory only, on purpose: a Blob cannot survive JSON.stringify (persist()) or
+  // a reload, so an image is only sendable to sample() as pixels for the rest of THIS browser
+  // session — after a reload, the session still shows its manuscript (name + kind), it simply
+  // can no longer be attached as an image again.
+  var journalFileBlobs = {};
+  var pendingUploadPhase = null;
+  var pendingUploadSpace = null;
+  // Manuscript draft for the session currently being composed at a given phase — confirmed via
+  // the "Décrire" composer (see openSessionManuscriptComposer) but not yet part of a saved
+  // session. Ephemeral, in-memory only, cleared on save or on "Retirer". pendingManuscriptBlob
+  // mirrors it for an image file, exactly like journalFileBlobs does for a saved session.
+  var sessionManuscriptDraft = {};
+  var pendingManuscriptBlob = {};
+  // "Expérience d'écriture" — unsaved rating selections, keyed by phase key ("naissance" for the
+  // global Legs Immatériel variant). Ephemeral, in-memory only, cleared once a check-in is saved.
+  var expDraft = {};
+  // Reste toujours "false" dans cette version backend : la génération passe par un vrai
+  // serveur (toujours annoncé dans l'interface), pas par une capacité d'artefact qui peut
+  // être absente. Conservée pour ne pas toucher aux nombreux "if(!sampleUnavailable)" qui
+  // décident, dans les fonctions de rendu plus bas, d'afficher ou non les boutons "Générer".
+  var sampleUnavailable = false;
+  var activeAbort = {}; // keyed "analyse:<phase>:<session>" | "compilation:<phase>" | "phaseText:<phase>" | "metaAnalyse:<lens>" | "ontoAmorce" -> AbortController
+
+  function uid(prefix){ return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function sid(phase,space,name){ return name + "__" + phase + "__" + space; }
+  function pad2(n){ return n<10 ? "0"+n : ""+n; }
+  function todayISO(){ var d = new Date(); return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+  var MOIS_FR = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  function formatDateFR(iso){
+    if(!iso) return "—";
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if(!m) return iso; // legacy / non-ISO strings pass through unchanged
+    var y = parseInt(m[1],10), mo = parseInt(m[2],10)-1, d = parseInt(m[3],10);
+    return d + " " + (MOIS_FR[mo]||"") + " " + y;
+  }
+  function nowLabel(){ return formatDateFR(todayISO()); }
+  function signatureLine(dateLabel){
+    var name = (PROJECT.authorName||"").trim();
+    var place = (PROJECT.place||"").trim();
+    if(!name && !place) return "";
+    var bits = [];
+    if(name) bits.push(esc(name));
+    var rest = [];
+    if(place) rest.push(esc(place));
+    if(dateLabel) rest.push(esc(dateLabel));
+    if(rest.length) bits.push(rest.join(", "));
+    return '<p class="signature-line">— ' + bits.join(" · ") + '</p>';
+  }
+  // Une entrée ancienne peut encore porter deux dates (vécu le / écrit le), héritées de l'ancien
+  // mécanisme à deux itinéraires — l'affichage les honore, sans que rien ne les propose plus.
+  function entryDateLabel(e){
+    if(e.dateVecu || e.dateEcrit) return "Vécu le " + formatDateFR(e.dateVecu||e.dateEcrit) + " · écrit le " + formatDateFR(e.dateEcrit||e.dateVecu);
+    return formatDateFR(e.date);
+  }
+
+  /* ---- native .docx raw-text extraction (no external library) ----
+     A .docx is a ZIP archive; the readable text lives in word/document.xml as
+     <w:t> run text. We locate that entry by walking the ZIP central directory
+     ourselves, then either use its bytes as-is (stored, method 0) or inflate
+     them with the browser's own DecompressionStream("deflate-raw") (method 8
+     — the usual case). No external script tag, no CDN dependency. This is the
+     primary attempt; mammoth.js (loaded from cdnjs, see the <script> tag
+     below) is kept only as a secondary fallback for the rare case where
+     native parsing fails but mammoth happens to have loaded. */
+  function readUint32LE(view, off){ return view.getUint32(off, true); }
+  function readUint16LE(view, off){ return view.getUint16(off, true); }
+  function findZipEntryBytes(arrayBuffer, entryName){
+    var view = new DataView(arrayBuffer);
+    var bytes = new Uint8Array(arrayBuffer);
+    var len = arrayBuffer.byteLength;
+    if(len < 22) throw new Error("Fichier trop petit pour être un .docx");
+    var maxBack = Math.min(len, 65557);
+    var eocdOff = -1;
+    for(var i = len - 22; i >= len - maxBack && i >= 0; i--){
+      if(readUint32LE(view, i) === 0x06054b50){ eocdOff = i; break; }
+    }
+    if(eocdOff < 0) throw new Error("Structure ZIP introuvable (EOCD absent)");
+    var cdCount = readUint16LE(view, eocdOff + 10);
+    var cdOffset = readUint32LE(view, eocdOff + 16);
+    var dec = new TextDecoder("utf-8");
+    var offset = cdOffset;
+    for(var e = 0; e < cdCount; e++){
+      if(offset + 46 > len) throw new Error("Table centrale ZIP tronquée");
+      if(readUint32LE(view, offset) !== 0x02014b50) throw new Error("Signature de table centrale invalide");
+      var compMethod = readUint16LE(view, offset + 10);
+      var compSize = readUint32LE(view, offset + 20);
+      var nameLen = readUint16LE(view, offset + 28);
+      var extraLen = readUint16LE(view, offset + 30);
+      var commentLen = readUint16LE(view, offset + 32);
+      var localHeaderOffset = readUint32LE(view, offset + 42);
+      var name = dec.decode(bytes.subarray(offset + 46, offset + 46 + nameLen));
+      if(name === entryName){
+        if(localHeaderOffset + 30 > len) throw new Error("En-tête local ZIP hors limites");
+        if(readUint32LE(view, localHeaderOffset) !== 0x04034b50) throw new Error("Signature d'en-tête local invalide");
+        var lNameLen = readUint16LE(view, localHeaderOffset + 26);
+        var lExtraLen = readUint16LE(view, localHeaderOffset + 28);
+        var dataStart = localHeaderOffset + 30 + lNameLen + lExtraLen;
+        return { method: compMethod, bytes: bytes.slice(dataStart, dataStart + compSize) };
+      }
+      offset += 46 + nameLen + extraLen + commentLen;
+    }
+    return null;
+  }
+  function decompressZipBytes(bytes, method){
+    if(method === 0) return Promise.resolve(bytes); // stored, already raw
+    if(method === 8){ // deflate
+      if(typeof DecompressionStream === "undefined") return Promise.reject(new Error("DecompressionStream indisponible"));
+      try{
+        var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+        return new Response(stream).arrayBuffer().then(function(buf){ return new Uint8Array(buf); });
+      }catch(e){ return Promise.reject(e); }
+    }
+    return Promise.reject(new Error("Méthode de compression ZIP non prise en charge (" + method + ")"));
+  }
+  function docxXmlToText(xml){
+    var text = xml
+      .replace(/<w:tab\b[^>]*\/?>/g, "\t")
+      .replace(/<w:br\b[^>]*\/?>/g, "\n")
+      .replace(/<w:cr\b[^>]*\/?>/g, "\n")
+      .replace(/<\/w:p>/g, "\n")
+      .replace(/<w:p\b[^>]*\/>/g, "\n")
+      .replace(/<[^>]+>/g, "");
+    text = text
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+      .replace(/&amp;/g, "&");
+    text = text.replace(/\n{3,}/g, "\n\n").trim();
+    return text;
+  }
+  function extractDocxTextNative(arrayBuffer){
+    return new Promise(function(resolve, reject){
+      var entry;
+      try{ entry = findZipEntryBytes(arrayBuffer, "word/document.xml"); }
+      catch(e){ reject(e); return; }
+      if(!entry){ reject(new Error("word/document.xml introuvable dans l'archive")); return; }
+      decompressZipBytes(entry.bytes, entry.method).then(function(xmlBytes){
+        var xml;
+        try{ xml = new TextDecoder("utf-8").decode(xmlBytes); }
+        catch(e){ reject(e); return; }
+        var text;
+        try{ text = docxXmlToText(xml); }
+        catch(e){ reject(e); return; }
+        if(!text){ reject(new Error("Extraction vide")); return; } // garbled/empty — treat as failure, never fake content
+        resolve(text);
+      }, reject);
+    });
+  }
+
+  function qKey(phase,space){ return phase + "::" + space; }
+  function queueFor(key){ return docQueue[key] || (docQueue[key] = []); }
+  function fileKind(file){
+    var t = file.type || "";
+    var n = file.name || "";
+    if(t.indexOf("image/")===0) return "image";
+    if(t.indexOf("audio/")===0) return "audio";
+    if(t.indexOf("video/")===0) return "video";
+    if(t.indexOf("text/")===0 || /\.(txt|md)$/i.test(n)) return "text";
+    if(t==="application/pdf" || t==="application/msword" || t.indexOf("application/vnd.openxmlformats-officedocument")===0 ||
+       t==="application/vnd.oasis.opendocument.text" || t==="application/rtf" ||
+       /\.(pdf|docx?|odt|rtf)$/i.test(n)) return "document";
+    return "other";
+  }
+  function fileExt(name){
+    var m = /\.([a-z0-9]+)$/i.exec(name || "");
+    return m ? m[1].toUpperCase() : "FICHIER";
+  }
+  function handleFiles(phase, space, fileList){
+    var key = qKey(phase,space);
+    Array.prototype.forEach.call(fileList, function(file){
+      var item = {
+        id: "doc" + Date.now() + Math.random().toString(36).slice(2),
+        name: file.name, kind: fileKind(file), previewUrl: null, extractedText: "", loading: false,
+        file: file
+      };
+      if(item.kind === "image" || item.kind === "audio" || item.kind === "video"){
+        try{ item.previewUrl = URL.createObjectURL(file); }catch(e){}
+      }
+      queueFor(key).push(item);
+      if(item.kind === "text"){
+        item.loading = true;
+        var reader = new FileReader();
+        reader.onload = function(){
+          item.extractedText = String(reader.result || "").slice(0, 4000);
+          item.loading = false;
+          if(view === "stage:"+phase) renderStage(phase);
+        };
+        reader.onerror = function(){
+          item.loading = false;
+          if(view === "stage:"+phase) renderStage(phase);
+        };
+        reader.readAsText(file);
+      } else if(item.kind === "document" && /\.docx$/i.test(file.name)){
+        item.loading = true;
+        var reader2 = new FileReader();
+        reader2.onload = function(){
+          var buf = reader2.result;
+          extractDocxTextNative(buf).then(function(text){
+            item.extractedText = text.slice(0, 4000);
+            item.loading = false;
+            if(view === "stage:"+phase) renderStage(phase);
+          }, function(){
+            if(typeof window.mammoth !== "undefined"){
+              try{
+                window.mammoth.extractRawText({arrayBuffer: buf}).then(function(result){
+                  var t = String((result && result.value) || "").trim();
+                  item.extractedText = t.slice(0, 4000);
+                  item.loading = false;
+                  if(view === "stage:"+phase) renderStage(phase);
+                }, function(){
+                  item.loading = false;
+                  if(view === "stage:"+phase) renderStage(phase);
+                });
+              }catch(e){
+                item.loading = false;
+                if(view === "stage:"+phase) renderStage(phase);
+              }
+            } else {
+              item.loading = false;
+              if(view === "stage:"+phase) renderStage(phase);
+            }
+          });
+        };
+        reader2.onerror = function(){
+          item.loading = false;
+          if(view === "stage:"+phase) renderStage(phase);
+        };
+        reader2.readAsArrayBuffer(file);
+      }
+    });
+    if(view === "stage:"+phase) renderStage(phase);
+  }
+  function discardDoc(phase, space, id){
+    var key = qKey(phase,space);
+    var arr = queueFor(key);
+    var idx = -1;
+    arr.forEach(function(d,i){ if(d.id===id) idx=i; });
+    if(idx>-1){
+      if(arr[idx].previewUrl){ try{ URL.revokeObjectURL(arr[idx].previewUrl); }catch(e){} }
+      arr.splice(idx,1);
+    }
+    if(view === "stage:"+phase) renderStage(phase);
+  }
+  function docPreviewHtml(item){
+    if(item.kind==="image") return '<img class="doc-thumb" src="'+item.previewUrl+'" alt="">';
+    if(item.kind==="audio") return '<audio class="doc-media" controls src="'+item.previewUrl+'"></audio>';
+    if(item.kind==="video") return '<video class="doc-media" controls src="'+item.previewUrl+'" style="max-height:140px;"></video>';
+    if(item.kind==="text") return item.loading
+      ? '<p class="doc-text-preview empty">Lecture du fichier…</p>'
+      : '<p class="doc-text-preview">'+esc(item.extractedText.slice(0,180))+(item.extractedText.length>180?'…':'')+'</p>';
+    if(item.kind==="document"){
+      if(item.loading) return '<p class="doc-text-preview empty">Lecture du fichier…</p>';
+      if(item.extractedText) return '<p class="doc-text-preview">'+esc(item.extractedText.slice(0,180))+(item.extractedText.length>180?'…':'')+'</p>';
+      return '<div class="doc-file-badge">'+esc(fileExt(item.name))+'</div>';
+    }
+    return '<p class="doc-text-preview empty">Aperçu non disponible pour ce type de fichier.</p>';
+  }
+  function docQueueHtml(phase, space){
+    var q = queueFor(qKey(phase,space));
+    if(q.length===0) return '';
+    var html = '<div class="doc-queue">';
+    q.forEach(function(item){
+      html += '<div class="doc-card">' + docPreviewHtml(item) +
+        '<div class="doc-meta"><span class="doc-name">'+esc(item.name)+'</span>' +
+        '<div class="doc-actions"><button class="add-btn" data-sort="'+item.id+'" data-phase="'+phase+'" data-space="'+space+'"'+(item.loading?' disabled':'')+'>Décrire</button>' +
+        '<button class="reset-link doc-discard" data-discard="'+item.id+'" data-phase="'+phase+'" data-space="'+space+'">Retirer</button></div></div>' +
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function blankEntries(){
+    var b = {};
+    phaseStages().forEach(function(s){
+      b[s.key] = {sessions:[], experience:{checkins:[]}, compilation:null};
+    });
+    b.naissance = {metaAnalyse:{poietique:null, praxeologique:null}};
+    b.experienceGlobale = {journal:[]};
+    return b;
+  }
+  // Un élément d'analyse (poïétique ou praxéologique) à l'intérieur d'une session — identique à
+  // l'ancien élément de retour, simplement rangé maintenant à l'intérieur d'une session plutôt
+  // qu'à plat sous la phase.
+  function normalizeElement(o){
+    if(!o || typeof o !== "object") return null;
+    if(typeof o.text !== "string" || !o.text.trim()) return null;
+    return {
+      id: o.id || uid("el"),
+      registre: registreOf(o.registre) ? o.registre : "psychique",
+      geste: gesteOf(o.geste) ? o.geste : "constat",
+      text: o.text,
+      response: (o.response && typeof o.response === "object" && o.response.kind) ? o.response : null
+    };
+  }
+  // Une session — une version-manuscrit (facultative) + un témoignage, avec ses deux fenêtres
+  // d'analyse propres. Coercitive par conception : jamais d'exception sur une session mal formée
+  // ou manquante, qu'elle vienne d'un import ou d'une ancienne forme du prototype.
+  function normalizeSession(o){
+    if(!o || typeof o !== "object") o = {};
+    var manuscript = null;
+    if(o.manuscript && typeof o.manuscript === "object" && o.manuscript.name){
+      manuscript = { name: String(o.manuscript.name), kind: o.manuscript.kind || "other", extractedText: String(o.manuscript.extractedText || "") };
+    }
+    return {
+      id: o.id || uid("s"),
+      date: o.date || todayISO(),
+      manuscript: manuscript,
+      temoignage: typeof o.temoignage === "string" ? o.temoignage : "",
+      analysePoietique: (Array.isArray(o.analysePoietique) ? o.analysePoietique : []).map(normalizeElement).filter(Boolean),
+      analysePraxeologique: (Array.isArray(o.analysePraxeologique) ? o.analysePraxeologique : []).map(normalizeElement).filter(Boolean)
+    };
+  }
+  // Normalise vers la forme courante (une liste de sessions par étape, chacune avec son propre
+  // manuscrit + témoignage + deux fenêtres d'analyse). Une sauvegarde exportée par une version
+  // antérieure du prototype (un seul espace d'écriture + une analyse à plat par phase) n'a aucun
+  // de ces champs, donc revient simplement vide plutôt que migrée — l'essentiel ici est seulement
+  // qu'importer un fichier à l'ancienne forme ne lève jamais d'exception.
+  function normalizeEntries(e){
+    if(!e || typeof e !== "object") e = {};
+    phaseStages().forEach(function(s){
+      if(!e[s.key] || typeof e[s.key] !== "object") e[s.key] = {};
+      var ph = e[s.key];
+      ph.sessions = (Array.isArray(ph.sessions) ? ph.sessions : []).map(normalizeSession);
+      if(ph.compilation === undefined) ph.compilation = null;
+      if(!ph.experience || typeof ph.experience !== "object") ph.experience = {checkins:[]};
+      if(!Array.isArray(ph.experience.checkins)) ph.experience.checkins = [];
+    });
+    if(!e.naissance || typeof e.naissance !== "object") e.naissance = {metaAnalyse:{poietique:null, praxeologique:null}};
+    if(!e.naissance.metaAnalyse || typeof e.naissance.metaAnalyse !== "object") e.naissance.metaAnalyse = {poietique:null, praxeologique:null};
+    if(e.naissance.metaAnalyse.poietique === undefined) e.naissance.metaAnalyse.poietique = null;
+    if(e.naissance.metaAnalyse.praxeologique === undefined) e.naissance.metaAnalyse.praxeologique = null;
+    if(!e.experienceGlobale || typeof e.experienceGlobale !== "object") e.experienceGlobale = {journal:[]};
+    if(!Array.isArray(e.experienceGlobale.journal)) e.experienceGlobale.journal = [];
+    return e;
+  }
+  // ---------- couche réseau — remplace toute lecture/écriture localStorage ----------
+  function apiError(code, message){ var e = new Error(message || "Erreur serveur."); e.code = code; return e; }
+  function apiCall(method, path, body, signal){
+    var opts = { method: method, headers: {"content-type":"application/json"} };
+    if(body !== undefined) opts.body = JSON.stringify(body);
+    if(signal) opts.signal = signal;
+    return fetch(path, opts).then(function(res){
+      return res.json().catch(function(){ return null; }).then(function(data){
+        if(!res.ok) throw apiError((data && data.error) || ("http_"+res.status), (data && data.message) || "Erreur serveur.");
+        return data;
+      });
+    });
+  }
+  function projectPayload(){
+    return {
+      poieticTitle: PROJECT.poieticTitle,
+      workingTitle: PROJECT.workingTitle || "",
+      genre: PROJECT.genre || "",
+      started: PROJECT.started || "",
+      authorName: PROJECT.authorName || "",
+      place: PROJECT.place || "",
+      stageStatus: PROJECT.stageStatus || null,
+      phaseTextOverrides: PROJECT.phaseTextOverrides || null
+    };
+  }
+  // Sauvegarde PROJECT + entries en un seul appel réseau — le backend porte les deux
+  // ensemble dans la ligne "projet actif" de cette personne. persist() et
+  // persistProject() partagent ce même envoi (l'un ou l'autre suffit après une mutation,
+  // les deux ne font qu'un appel redondant de plus, jamais une perte de données).
+  function syncProject(){
+    if(!SLUG) return Promise.resolve();
+    return apiCall("PUT", "/api/project", { slug: SLUG, project: projectPayload(), entries: entries }).catch(function(err){
+      showIoToast("La sauvegarde a échoué (" + ((err && err.code) || "erreur") + ") — réessaie dans un moment.", true);
+    });
+  }
+  function persist(){ syncProject(); }
+  function persistProject(){ syncProject(); }
+  // Un principe praxéologique, tel que le backend le renvoie (colonne "text"), reconverti
+  // vers la forme attendue par le rendu existant (champ "t") — voir renderPraxeologie().
+  function praxRowToClient(row){
+    return { id: row.id, d: row.d, stage: row.stage, type: row.type, status: row.status, t: row.text };
+  }
+  function archivedRecordFromRow(row){
+    return { id: row.id, project: row.project, entries: row.entries, archivedAt: row.archivedAt };
+  }
+  function stageOf(key){ return STAGES.filter(function(s){return s.key===key;})[0]; }
+  function stageDisplayName(s){ return s ? s.name : ""; }
+  function stageStatus(s){ return (PROJECT.stageStatus && PROJECT.stageStatus[s.key]) || s.status; }
+  function defaultStageStatus(){
+    var st = {};
+    STAGES.forEach(function(s, i){ st[s.key] = i===0 ? "current" : "upcoming"; });
+    return st;
+  }
+  function gesteOf(key){ return GESTES.filter(function(t){return t.key===key;})[0]; }
+  function registreOf(key){ return REGISTRES.filter(function(r){return r.key===key;})[0]; }
+  function praxTypeOf(key){ return PRAX_TYPES.filter(function(p){return p.key===key;})[0]; }
+  function esc(s){
+    var d=document.createElement("div"); d.textContent=s==null?"":s; return d.innerHTML;
+  }
+  // The five témoignage phases (each with one écriture space) — everything but "naissance", phase 6.
+  function phaseStages(){ return STAGES.filter(function(s){ return s.key !== "naissance"; }); }
+  function countSessionsAll(){
+    return countSessionsAllFor(entries);
+  }
+  function countSessionsAllFor(entriesObj){
+    var n=0;
+    phaseStages().forEach(function(s){
+      n += ((entriesObj[s.key] && entriesObj[s.key].sessions) || []).length;
+    });
+    return n;
+  }
+  function countCompilations(){
+    var n=0; phaseStages().forEach(function(s){ if(entries[s.key].compilation && (entries[s.key].compilation.text||"").trim()) n++; }); return n;
+  }
+  // Tous les éléments d'analyse (poïétique + praxéologique) de TOUTES les sessions d'une étape,
+  // chacun annoté de la session et du lens dont il provient — utilisé par l'aperçu et par la
+  // compilation de phase, qui doivent lire à travers l'ensemble des sessions.
+  function analyseElementsAll(phaseKey){
+    var out = [];
+    (entries[phaseKey].sessions || []).forEach(function(sess){
+      (sess.analysePoietique||[]).forEach(function(e){ out.push({el:e, lens:"poietique", session:sess}); });
+      (sess.analysePraxeologique||[]).forEach(function(e){ out.push({el:e, lens:"praxeologique", session:sess}); });
+    });
+    return out;
+  }
+  function countRespondedAll(phaseKey){
+    return analyseElementsAll(phaseKey).filter(function(item){ return !!item.el.response; }).length;
+  }
+  // Les éléments déjà répondus d'une étape, pour UN seul lens, à travers toutes les sessions —
+  // utilisé par la méta-analyse phénoménologique (phase 6), qui relit chaque lens séparément.
+  function respondedElementsForPhaseLens(phaseKey, lens){
+    return analyseElementsAll(phaseKey).filter(function(item){ return item.lens === lens && !!item.el.response; });
+  }
+  function findSession(phaseKey, sessionId){
+    var found = null;
+    (entries[phaseKey].sessions || []).forEach(function(s){ if(s.id === sessionId) found = s; });
+    return found;
+  }
+
+  /* ---------- project card ---------- */
+  function projectSubtitleLine(){
+    var parts = [];
+    if(PROJECT.genre) parts.push(esc(PROJECT.genre));
+    if(PROJECT.workingTitle) parts.push('titre de travail : '+esc(PROJECT.workingTitle));
+    return parts.join(' · ');
+  }
+  function renderProjectCard(){
+    var el = document.getElementById("projectCard");
+    var sub = projectSubtitleLine();
+    el.innerHTML =
+      '<span class="label">Projet poïétique en cours</span>' +
+      '<div class="title">'+esc(PROJECT.poieticTitle)+'</div>' +
+      (sub ? '<div class="subtitle">'+sub+'</div>' : '') +
+      (PROJECT.started ? '<div class="meta">Débuté '+esc(PROJECT.started)+'</div>' : '') +
+      '<span class="demo-badge" style="color:var(--stage-done); border-color:var(--stage-done); background:var(--stage-done-soft);">Votre projet</span>';
+    document.getElementById("spineCycleNote").textContent = "↻ « Ce qu'il en naît » précède un nouveau cycle, une nouvelle Inception.";
+  }
+
+  /* ---------- spine (nav) ---------- */
+  function renderSpine(){
+    var el = document.getElementById("spine");
+    el.innerHTML = '<div class="spine-title">Vue d’ensemble</div>';
+    var overviewBtn = document.createElement("button");
+    overviewBtn.className = "rail-link" + (view==="overview" ? " active" : "");
+    overviewBtn.textContent = "◎ L'arc du projet";
+    overviewBtn.style.marginBottom = "13px";
+    overviewBtn.addEventListener("click", function(){ setView("overview"); });
+    el.appendChild(overviewBtn);
+
+    var title = document.createElement("div");
+    title.className = "spine-title";
+    title.textContent = "Les six étapes";
+    el.appendChild(title);
+
+    STAGES.forEach(function(s){
+      var item = document.createElement("button");
+      item.className = "spine-item" + (view==="stage:"+s.key ? " active" : "");
+      var st = stageStatus(s);
+      var dotClass = "spine-dot" + (st==="done" ? " done" : st==="current" ? " current" : "");
+      item.innerHTML =
+        '<span class="spine-line"></span>' +
+        '<span class="'+dotClass+'">'+ (st==="done" ? "✓" : s.num) +'</span>' +
+        '<span class="spine-text"><span class="name">'+esc(stageDisplayName(s))+'</span><br>' +
+        '<span class="status">'+ (st==="done"?"Complété":st==="current"?"En cours":"À venir") +'</span></span>';
+      item.addEventListener("click", function(){ setView("stage:"+s.key); });
+      el.appendChild(item);
+    });
+  }
+
+  /* ---------- écran d'accueil — présentation du carnet ---------- */
+  function renderWelcome(){
+    var html = '<div class="welcome-hero">';
+    html += '<div class="welcome-mark"><span class="flame">🕯️</span> Scriptus Viator</div>';
+    html += '<h2>Le guide de ton voyage d’écriture</h2>';
+    html += '<p class="welcome-lede">Scriptus Viator tient, en parallèle d’un <b>projet de création</b>, un <b>Journal Poïétique</b> — le témoignage d’un geste créateur observé pendant qu’il se fait, et non seulement une fois l’œuvre achevée. Poïétique renvoie ici à l’étude de l’acte de créer lui-même : ce qui se décide, se transforme, se résout dans le corps à corps avec l’œuvre — une démarche d’observation qui relève d’une exploration phénoménologique du vécu créateur. Chaque projet comporte ainsi deux volets tenus côte à côte : le <b>projet-activité</b>, la création elle-même, et le <b>projet-témoignage</b>, ce carnet.</p>';
+    html += '<p class="welcome-lede">Ce que le carnet observe, c’est toujours l’acte d’écrire lui-même — jamais l’événement qu’il rapporte. Peu importe alors que ce dont il parle soit en train de se vivre ou déjà survenu : l’écriture qui en témoigne se fait toujours au présent. Six étapes accompagnent ainsi tout projet, de son élan initial à ce qu’il en apprend : <b>Inception</b>, <b>Gestation</b>, <b>Création</b>, <b>Mise au monde</b>, <b>Post-Partum</b>, et <b>Ce qu’il en naît</b>.</p>';
+    html += '</div>';
+
+    html += '<p class="welcome-note">Cette présentation reste accessible à tout moment depuis « 🕯️ Présentation » dans la marge.</p>';
+    html += '<button class="add-btn" id="welcomeContinueBtn">Continuer vers l’aperçu du projet →</button>';
+
+    document.getElementById("main").innerHTML = html;
+    var cb = document.getElementById("welcomeContinueBtn");
+    if(cb) cb.addEventListener("click", function(){
+      try{ localStorage.setItem(WELCOME_KEY, "1"); }catch(e){}
+      setView("overview");
+    });
+  }
+
+  /* ---------- overview ---------- */
+  function renderOverview(){
+    var html = '';
+    html += '<div class="view-head"><div><h2>'+esc(PROJECT.poieticTitle)+'</h2>' +
+      (projectSubtitleLine() ? '<p class="working-title">'+projectSubtitleLine()+'</p>' : '') +
+      '<p class="stage-blurb">Un espace tenu au fil des jours, une lecture poïétique que Scriptus Viator propose à chaque étape, et le geste — consentir, commenter, ajuster — qui en fait la trace réelle du processus.</p></div></div>';
+
+    html += '<div class="stat-row">' +
+      stat(countSessionsAll(), "Sessions") +
+      stat(countCompilations()+" / 5", "Compilations de phase écrites") +
+      stat(praxeologie.length, "Principes praxéologiques") +
+      stat(PROJECT.started || "—", "Point de départ") +
+      '</div>';
+
+    html += renderStageWheel();
+
+    var showcase = phaseStages().slice().reverse().filter(function(s){
+      return (entries[s.key].sessions||[]).length>0;
+    })[0] || phaseStages()[0];
+    html += '<div class="two-col-preview">';
+    html += previewColJournal(showcase.key);
+    html += previewColAuto(showcase.key);
+    html += '</div>';
+
+    document.getElementById("main").innerHTML = html;
+    wireStageWheel();
+  }
+
+  /* ---------- cercle des étapes — même mécanique que le tableau de bord de Vita Viator :
+     un centre (le projet en cours, ce que Scriptus Viator observe), six nœuds disposés
+     autour à angle égal, reliés au centre par un trait fin. Un seul accent pour toute la
+     roue ; le statut se lit par la forme du nœud (plein/pointillé/✓), pas par une couleur
+     propre à chaque cercle. ---------- */
+  function renderStageWheel(){
+    var n = STAGES.length, R = 34;
+    var pts = STAGES.map(function(s,i){
+      var a = (-90 + i*(360/n)) * Math.PI/180;
+      return {s:s, x:(50+R*Math.cos(a)).toFixed(2), y:(50+R*Math.sin(a)).toFixed(2)};
+    });
+
+    var html = '<div class="wheel-frame"><div class="stage-wheel" id="stageWheel">';
+
+    html += '<svg class="wheel-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">';
+    pts.forEach(function(p){
+      html += '<line class="wheel-line" data-key="'+p.s.key+'" x1="50" y1="50" x2="'+p.x+'" y2="'+p.y+'"></line>';
+    });
+    html += '</svg>';
+
+    html += '<div class="wheel-center" aria-hidden="true">' +
+      '<span class="wc-eyebrow">Projet en cours</span>' +
+      '<span class="wc-title">'+esc(PROJECT.poieticTitle)+'</span></div>';
+
+    pts.forEach(function(p){
+      var st = stageStatus(p.s);
+      var stClass = st==="done"?"done":st==="current"?"current":"upcoming";
+      var stLabel = st==="done"?"Complété":st==="current"?"En cours":"À venir";
+      html += '<button class="wheel-node '+stClass+'" data-key="'+p.s.key+'" ' +
+        'style="left:'+p.x+'%;top:'+p.y+'%;" tabindex="0" aria-label="'+esc(stageDisplayName(p.s))+' — '+stLabel+'">' +
+        '<span class="wn-num">0'+p.s.num+'</span>' +
+        '<span class="wn-name">'+esc(stageDisplayName(p.s))+'</span>' +
+        '<span class="wn-status">'+stLabel+'</span></button>';
+    });
+
+    html += '</div></div>';
+    return html;
+  }
+
+  function wireStageWheel(){
+    Array.prototype.forEach.call(document.querySelectorAll(".wheel-node"), function(node){
+      var key = node.getAttribute("data-key");
+      var line = document.querySelector('.wheel-line[data-key="'+key+'"]');
+      function on(){ node.classList.add("active"); if(line) line.classList.add("active"); }
+      function off(){ node.classList.remove("active"); if(line) line.classList.remove("active"); }
+      node.addEventListener("mouseenter", on);
+      node.addEventListener("mouseleave", off);
+      node.addEventListener("focus", on);
+      node.addEventListener("blur", off);
+      node.addEventListener("click", function(){ setView("stage:"+key); });
+      node.addEventListener("keypress", function(e){ if(e.key==="Enter") setView("stage:"+key); });
+    });
+  }
+
+  function stat(n,l){
+    return '<div class="stat"><span class="n">'+esc(String(n))+'</span><span class="l">'+esc(l)+'</span></div>';
+  }
+
+  function previewColJournal(phaseKey){
+    var list = (entries[phaseKey].sessions || []).slice(-3).reverse();
+    var html = '<div class="preview-col"><h3><span class="swatch" style="background:var(--accent)"></span>Dernières sessions — Rédaction poïétique</h3>';
+    if(list.length===0){ html += '<p class="empty-col">Aucune session pour l’instant.</p>'; }
+    list.forEach(function(sess){
+      var excerpt = (sess.temoignage||"").trim() || (sess.manuscript ? "(manuscrit déposé, sans témoignage)" : "");
+      html += '<div class="mini-entry"><div class="d">'+esc(entryDateLabel(sess))+'</div>' + esc(excerpt) + '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+  function previewColAuto(phaseKey){
+    var list = analyseElementsAll(phaseKey).filter(function(item){ return !!item.el.response; }).map(function(item){ return item.el; }).slice(-3).reverse();
+    var html = '<div class="preview-col"><h3><span class="swatch" style="background:var(--sky)"></span>Derniers gestes auto-poïétiques</h3>';
+    if(list.length===0){ html += '<p class="empty-col">Aucune réponse pour l’instant.</p>'; }
+    var LBL = {consentir:"Consenti", commenter:"Commenté", ajuster:"Ajusté"};
+    list.forEach(function(e){
+      html += '<div class="mini-entry"><div class="d">'+esc(e.response.d)+' · '+esc(LBL[e.response.kind]||e.response.kind)+'</div>' + esc(e.response.personText || e.text) + '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- stage detail ---------- */
+  // Chaque étape témoignage accumule désormais plusieurs SESSIONS d'écriture-création — chacune
+  // bundle a) l'espace d'accueil (le manuscrit de la session), b) la rédaction poïétique (le
+  // témoignage de cette session), puis, une fois enregistrée : c) l'analyse poïétique et
+  // d) l'analyse praxéologique, chacune sa propre fenêtre. Viennent ensuite, comme avant,
+  // l'Expérience d'écriture puis la Compilation — toujours à l'échelle de l'étape entière,
+  // compilant maintenant à travers toutes les sessions plutôt qu'un seul espace d'écriture.
+  function renderStage(key){
+    if(key === "naissance"){ renderNaissance(); return; }
+    var s = stageOf(key);
+    var st = stageStatus(s);
+    var pillClass = st==="done"?"done":st==="current"?"current":"upcoming";
+    var pillLabel = st==="done"?"Complété":st==="current"?"En cours":"À venir";
+
+    var html = '<div class="crumb">Étape 0'+s.num+' / 06 · '+esc(PROJECT.poieticTitle)+'</div>';
+    html += '<div class="view-head"><div><h2>'+esc(stageDisplayName(s))+'</h2>' +
+      (s.subtitle ? '<p class="working-title">'+esc(s.subtitle)+'</p>' : '') +
+      '<p class="stage-blurb">'+esc(s.blurb)+'</p></div>' +
+      '<span class="pill '+pillClass+'" style="margin-top:6px;">'+pillLabel+'</span></div>';
+
+    html += phaseTextDrawerHtml(s);
+    html += coachingNoteBlockHtml(key);
+    html += sessionAccueilBlockHtml(key);
+    html += sessionTemoignageBlockHtml(key);
+    html += sessionsListHtml(key);
+    html += expSpaceHtml(key, {
+      checkins: entries[key].experience.checkins,
+      title: "Expérience d’écriture",
+      badge: "Auto-évaluation",
+      hint: "Un bref pouls de l’expérience d’écrire elle-même, à cette étape — distinct des sessions et de leur analyse ci-dessus : ce que le geste d’écrire a coûté ou donné, sur quatre plans.",
+      saveLabel: "Enregistrer l’auto-évaluation"
+    });
+    html += compilationBlockHtml(key);
+
+    document.getElementById("main").innerHTML = html;
+    wireStageEvents(key);
+  }
+
+  function phaseTextDrawerHtml(s){
+    var html = '<details class="stage-full"><summary>Comprendre cette étape</summary>' +
+      '<div class="full-text">' + fullTextHtml(s) + '</div>';
+    if(!sampleUnavailable){
+      var hasOverride = !!(PROJECT.phaseTextOverrides && PROJECT.phaseTextOverrides[s.key]);
+      html += '<div class="drawer-actions">' +
+        '<button class="add-btn" id="phaseTextGenBtn" data-phase="'+s.key+'">'+(hasOverride?"↻ Régénérer l'explication":"Générer l'explication")+'</button>' +
+        '<button class="add-btn" id="phaseTextEditBtn" data-phase="'+s.key+'">✎ Modifier</button>' +
+        '</div><div id="phaseTextStatus__'+s.key+'" style="padding:0 17px 12px;"></div>';
+    }
+    html += '</details>';
+    return html;
+  }
+
+  function currentPhaseTexts(s){
+    var ov = PROJECT.phaseTextOverrides && PROJECT.phaseTextOverrides[s.key];
+    return (ov && ov.length) ? ov : s.full;
+  }
+  function fullTextHtml(s){
+    return currentPhaseTexts(s).map(function(p){ return "<p>"+esc(p)+"</p>"; }).join("")
+      + '<p class="scriptus-signature">— Scriptus Viator</p>';
+  }
+
+  /* ---- retour de coaching — lecture seule, écrit depuis admin-person.html (PUT
+     /api/admin/coaching-notes) et reçu ici tel quel dans coachingNotes[phaseKey].
+     Rien à faire si la note est vide : pas de bloc vide affiché pour rien. ---- */
+  function coachingNoteBlockHtml(phaseKey){
+    var text = (coachingNotes && coachingNotes[phaseKey]) || "";
+    if(!text.trim()) return "";
+    return '<div class="coaching-note-block">' +
+      '<div class="coaching-note-head"><span class="flame">🕯️</span><h4>Retour de ton accompagnateur</h4></div>' +
+      '<p class="coaching-note-text">'+esc(text)+'</p>' +
+      '</div>';
+  }
+
+  /* ---- composer d'une NOUVELLE session : a) espace d'accueil + b) rédaction poïétique ---- */
+  // "accueil" est le seul "space" désormais utilisé par la plomberie générique de dépôt de
+  // document (qKey/docQueueHtml/handleFiles/discardDoc) — réutilisée telle quelle, simplement
+  // bornée à UN seul fichier en attente à la fois (voir le listener de #docFileInput, qui vide
+  // la file avant d'y déposer le nouveau choix), puisqu'une session porte "sa version Word",
+  // au singulier.
+  var ACCUEIL = "accueil";
+  function sessionDraftManuscript(phaseKey){ return sessionManuscriptDraft[phaseKey] || null; }
+
+  function sessionAccueilBlockHtml(phaseKey){
+    var html = '<div class="named-space">';
+    html += '<div class="named-space-head"><h3>Espace d’accueil</h3></div>';
+    html += '<p class="named-space-hint">Téléverse ta version Word (ou tout autre document) pour cette session d’écriture-création — une seule à la fois, celle de la session en train de se composer.</p>';
+
+    var confirmed = sessionDraftManuscript(phaseKey);
+    if(confirmed){
+      html += '<div class="session-manuscript-confirmed"><div><span class="session-manuscript-tag">'+esc(confirmed.kind)+' · '+esc(confirmed.name)+'</span>' +
+        (confirmed.extractedText ? '<p class="doc-text-preview" style="margin-top:6px;">'+esc(confirmed.extractedText.slice(0,180))+(confirmed.extractedText.length>180?'…':'')+'</p>' : '') +
+        '</div><div class="sm-actions"><button class="add-btn" data-manuscript-edit data-phase="'+phaseKey+'">✎ Modifier</button>' +
+        '<button class="reset-link" data-manuscript-remove data-phase="'+phaseKey+'">Retirer</button></div></div>';
+    } else {
+      html += '<div class="doc-intake-bar"><div><h4>📎 Déposer un document</h4>' +
+        '<p class="prompt-hint" style="margin:4px 0 0;">Word, PDF, photo, enregistrement, courte vidéo — dépose ta version pour cette session, puis décris en quelques mots ce qu’elle donne à sentir.</p></div>' +
+        '<button class="add-btn" data-doc-upload data-phase="'+phaseKey+'" data-space="'+ACCUEIL+'" style="flex:none;">+ Choisir un fichier</button></div>';
+      html += docQueueHtml(phaseKey, ACCUEIL);
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function sessionTemoignageBlockHtml(phaseKey){
+    var html = '<div class="named-space">';
+    html += '<div class="named-space-head"><h3>Rédaction poïétique — témoignage</h3></div>';
+    html += '<p class="named-space-hint">Le récit de l’expérience de cette session d’écriture — distinct du manuscrit lui-même : ce que ça a été de l’écrire ou de la créer.</p>';
+    html += '<div class="space-metabar"><div class="a-dates">';
+    html += '<div class="a-datefield"><label>Date</label><input type="date" id="'+sid(phaseKey,"session","dateSingle")+'" value="'+todayISO()+'"></div>';
+    html += '</div></div>';
+    html += '<div class="space-canvas"><textarea id="'+sid(phaseKey,"session","composeText")+'" data-phase="'+phaseKey+'" placeholder="Ici j\'écris mon témoignage pour cette session"></textarea></div>';
+    html += '<div class="canvas-actions"><button class="save-btn" id="'+sid(phaseKey,"session","saveBtn")+'" style="margin-top:0; width:auto;" disabled>Enregistrer cette session</button></div>';
+    html += '</div>';
+    return html;
+  }
+
+  /* ---- les sessions déjà enregistrées — la plus récente en premier ---- */
+  function sessionsListHtml(phaseKey){
+    var sessions = entries[phaseKey].sessions || [];
+    if(sessions.length === 0) return '';
+    var html = '<div class="sessions-list-label">'+sessions.length+' session'+(sessions.length>1?'s':'')+' enregistrée'+(sessions.length>1?'s':'')+'</div>';
+    sessions.slice().reverse().forEach(function(sess){
+      html += sessionCardHtml(phaseKey, sess);
+    });
+    return html;
+  }
+  function sessionCardHtml(phaseKey, sess){
+    var html = '<div class="session-card" data-session="'+esc(sess.id)+'">';
+    html += '<div class="session-head"><span class="session-date">'+esc(entryDateLabel(sess))+'</span>' +
+      (sess.manuscript ? '<span class="session-manuscript-tag">'+esc(sess.manuscript.kind)+' · '+esc(sess.manuscript.name)+'</span>' : '') + '</div>';
+    if(sess.manuscript && sess.manuscript.extractedText){
+      html += '<details class="manuscript-details"><summary>Aperçu du manuscrit</summary>' +
+        '<p class="doc-text-preview">'+esc(sess.manuscript.extractedText)+'</p></details>';
+    } else if(!sess.manuscript){
+      html += '<p class="session-no-manuscript">Aucun manuscrit déposé pour cette session.</p>';
+    }
+    html += (sess.temoignage||"").trim()
+      ? '<p class="session-temoignage">'+esc(sess.temoignage)+'</p>'
+      : '<p class="session-temoignage empty">Aucun témoignage écrit pour cette session.</p>';
+
+    html += analyseWindowHtml(phaseKey, sess, "poietique");
+    html += analyseWindowHtml(phaseKey, sess, "praxeologique");
+    html += '</div>';
+    return html;
+  }
+
+  /* ---- c) et d) — analyse poïétique / praxéologique, deux fenêtres distinctes par session ---- */
+  function manuscriptImageForSession(sess){
+    if(sess.manuscript && sess.manuscript.kind === "image" && journalFileBlobs[sess.id]) return journalFileBlobs[sess.id];
+    return null;
+  }
+  function analyseStatusId(phaseKey, sessionId, lens){ return "analyseStatus__"+phaseKey+"__"+sessionId+"__"+lens; }
+  function analyseWindowHtml(phaseKey, sess, lens){
+    var lensLabel = lens === "praxeologique" ? "Praxéologique" : "Poïétique";
+    var arrKey = lens === "praxeologique" ? "analysePraxeologique" : "analysePoietique";
+    var els = sess[arrKey] || [];
+    var html = '<div class="named-space lens-'+lens+'"><div class="named-space-head"><h3>Analyse '+lensLabel.toLowerCase()+'</h3>' +
+      '<span class="lens-badge '+lens+'">'+lensLabel+'</span></div>';
+    html += '<p class="named-space-hint">'+(lens==="praxeologique"
+      ? "Ce que ce témoignage apprend sur la manière de faire, de fonctionner, de s’y prendre."
+      : "Ce qui se fabrique dans l’œuvre-vie en train de se faire, ce que ce témoignage donne à sentir.")+'</p>';
+    if(!sampleUnavailable){
+      var img = manuscriptImageForSession(sess);
+      html += '<div class="retour-controls"><button class="add-btn" data-analyse-gen data-phase="'+phaseKey+'" data-session="'+esc(sess.id)+'">'+(els.length?"↻ Régénérer l'analyse":"Générer l'analyse")+'</button></div>';
+      if(img){
+        html += '<p class="retour-note">L’image déposée comme manuscrit de cette session sera jointe à l’analyse, en plus du texte.</p>';
+      }
+    } else {
+      html += '<p class="retour-note">La génération automatique n\'est pas disponible dans cette fenêtre pour le moment.</p>';
+    }
+    html += '<div id="'+analyseStatusId(phaseKey, sess.id, lens)+'"></div>';
+    if(els.length === 0){
+      html += '<p class="empty-col">Aucune observation générée pour l’instant.</p>';
+    } else {
+      html += els.map(function(el){ return elementCardHtml(phaseKey, sess.id, lens, el); }).join("");
+    }
+    html += '</div>';
+    return html;
+  }
+  function elementCardHtml(phaseKey, sessionId, lens, el){
+    var rg = registreOf(el.registre) || {label: el.registre || "—"};
+    var gs = gesteOf(el.geste) || {label: el.geste || "—"};
+    var lensTag = '<span class="lens-tag '+esc(lens)+'">'+(lens==="praxeologique"?"Praxéologique":"Poïétique")+'</span>';
+    var html = '<div class="element-card" data-el="'+esc(el.id)+'">' +
+      '<div class="element-tags">'+lensTag+'<span class="reg">'+esc(rg.label)+'</span><span class="tag">'+esc(gs.label)+'</span></div>' +
+      '<p class="element-text">'+esc(el.text)+'</p>';
+    if(el.response){
+      html += responseBlockHtml(el.response);
+    } else {
+      html += '<div class="element-pending">en attente</div>' +
+        '<div class="auto-buttons">' +
+        '<button type="button" class="ab-btn consentir" data-consentir="'+esc(el.id)+'" data-phase="'+esc(phaseKey)+'" data-session="'+esc(sessionId)+'" data-lens="'+esc(lens)+'">✓ Consentir</button>' +
+        '<button type="button" class="ab-btn commenter" data-commenter="'+esc(el.id)+'" data-phase="'+esc(phaseKey)+'" data-session="'+esc(sessionId)+'" data-lens="'+esc(lens)+'">💬 Commenter</button>' +
+        '<button type="button" class="ab-btn ajuster" data-ajuster="'+esc(el.id)+'" data-phase="'+esc(phaseKey)+'" data-session="'+esc(sessionId)+'" data-lens="'+esc(lens)+'">✎ Ajuster</button>' +
+        '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+  function responseBlockHtml(r){
+    var LBL = {consentir:"✓ Consenti", commenter:"💬 Commenté", ajuster:"✎ Ajusté"};
+    var html = '<div class="element-response '+esc(r.kind)+'"><span class="resp-kind">'+esc(LBL[r.kind]||r.kind)+'</span><span class="resp-date">'+esc(r.d)+'</span>';
+    if(r.personText) html += '<p class="resp-text">« '+esc(r.personText)+' »</p>';
+    html += '</div>';
+    return html;
+  }
+
+  /* ---- 4) Compilation ---- */
+  function compilationBlockHtml(phaseKey){
+    var sourceText = allTemoignagesText(phaseKey);
+    var respondedTotal = countRespondedAll(phaseKey);
+    var compil = entries[phaseKey].compilation;
+    var html = '<div class="named-space"><div class="named-space-head"><h3>Compilation</h3></div>';
+    html += '<p class="named-space-hint">La version finale du texte issu de la rédaction poïétique de toutes les sessions de cette étape, et une synthèse phénoménologique qui compile les éléments — poïétiques et praxéologiques — auxquels tu as répondu ci-dessus, à travers l’ensemble des sessions.</p>';
+    html += '<p class="compil-source-label">Texte final — issu de l’écriture</p>';
+    html += sourceText.trim()
+      ? '<div class="compil-source">'+esc(sourceText)+'</div>' + signatureLine(nowLabel())
+      : '<div class="compil-source empty">Rien d’écrit ici pour l’instant.</div>';
+
+    html += '<p class="compil-source-label">Synthèse phénoménologique compilée</p>';
+    html += '<div class="recit-card"><div class="lbl"><span>Compilation de l’étape</span><div class="lbl-actions">';
+    if(!sampleUnavailable){
+      html += '<button class="recit-edit-btn" id="compilGenBtn__'+phaseKey+'"'+(respondedTotal===0?' disabled':'')+'>'+(compil && compil.text ? "↻ Régénérer" : "Générer")+'</button>';
+    }
+    html += '<button class="recit-edit-btn" id="compilEditBtn__'+phaseKey+'">✎ Modifier</button>';
+    html += '</div></div>';
+    if(compil && (compil.text||"").trim()){
+      html += '<p class="txt">'+esc(compil.text)+'</p>';
+    } else {
+      html += '<p class="txt empty">Pas encore écrite — réponds à quelques éléments dans l\'analyse ci-dessus, puis compile-les.</p>';
+    }
+    html += '</div><div id="compilStatus__'+phaseKey+'"></div>';
+    if(respondedTotal === 0 && !sampleUnavailable){
+      html += '<p class="retour-note">Le bouton « Générer » s\'active dès qu\'au moins une réponse existe dans l\'analyse ci-dessus.</p>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* ---- Expérience d'écriture — lightweight self-assessment (phases 1-5 + phase 6 global) ---- */
+  function expDraftFor(key){
+    return expDraft[key] || (expDraft[key] = {physique:null, psychique:null, emotionnel:null, intuitif:null});
+  }
+  function expPlaneRowHtml(key, plane, value){
+    var html = '<div class="exp-plane"><div class="exp-plane-label">'+esc(plane.label)+
+      '<span class="exp-plane-hint">'+esc(plane.hint)+'</span></div><div class="exp-scale">';
+    for(var i=1;i<=5;i++){
+      html += '<button type="button" class="exp-chip'+(value===i?' sel':'')+'" data-exp-phase="'+key+'" data-exp-plane="'+plane.key+'" data-exp-val="'+i+'" aria-label="'+esc(plane.label)+' : '+i+' sur 5">'+i+'</button>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+  function expDateFieldsHtml(key){
+    var html = '<div class="a-dates">';
+    html += '<div class="a-datefield"><label>Date</label><input type="date" id="expDateSingle__'+key+'" value="'+todayISO()+'"></div>';
+    html += '</div>';
+    return html;
+  }
+  function expHistoryHtml(checkins){
+    if(!checkins || checkins.length===0){
+      return '<p class="empty-col" style="padding:4px 0 0;">Aucune auto-évaluation pour l’instant.</p>';
+    }
+    var html = '<div class="exp-history">';
+    checkins.slice().reverse().forEach(function(c){
+      html += '<div class="exp-entry"><div class="exp-entry-d">'+esc(entryDateLabel(c))+'</div>';
+      var hasScore = EXPERIENCE_PLANES.some(function(p){ return !!c[p.key]; });
+      if(hasScore){
+        html += '<div class="exp-entry-scores">';
+        EXPERIENCE_PLANES.forEach(function(p){
+          if(c[p.key]) html += '<span class="exp-score-tag">'+esc(p.label)+' '+c[p.key]+'/5</span>';
+        });
+        html += '</div>';
+      }
+      if(c.note) html += '<p class="exp-entry-note">« '+esc(c.note)+' »</p>';
+      html += '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+  function expSpaceHtml(key, opts){
+    opts = opts || {};
+    var draft = expDraftFor(key);
+    var html = '<div class="exp-space'+(opts.modClass?(' '+opts.modClass):'')+'">';
+    html += '<div class="exp-head"><h4>'+esc(opts.title)+'</h4><span class="exp-badge">'+esc(opts.badge||"Auto-évaluation")+'</span></div>';
+    html += '<p class="exp-hint">'+esc(opts.hint||"")+'</p>';
+    html += '<div class="exp-planes">';
+    EXPERIENCE_PLANES.forEach(function(p){ html += expPlaneRowHtml(key, p, draft[p.key]); });
+    html += '</div>';
+    html += '<textarea class="exp-note" id="expNote__'+key+'" placeholder="Explicitation de l’expérience d’écriture"></textarea>';
+    html += '<div class="exp-footer">' + expDateFieldsHtml(key) +
+      '<button class="save-btn exp-save-btn" id="expSaveBtn__'+key+'" style="margin-top:0; width:auto;" disabled>'+esc(opts.saveLabel||"Enregistrer l’auto-évaluation")+'</button></div>';
+    html += expHistoryHtml(opts.checkins);
+    html += '</div>';
+    return html;
+  }
+  function updateExpSaveState(key){
+    var draft = expDraftFor(key);
+    var note = document.getElementById("expNote__"+key);
+    var hasRating = EXPERIENCE_PLANES.some(function(p){ return !!draft[p.key]; });
+    var hasNote = !!(note && note.value.trim());
+    var btn = document.getElementById("expSaveBtn__"+key);
+    if(btn) btn.disabled = !(hasRating || hasNote);
+  }
+  function saveExpCheckin(key){
+    var draft = expDraftFor(key);
+    var note = document.getElementById("expNote__"+key);
+    var noteVal = note ? note.value.trim() : "";
+    var hasRating = EXPERIENCE_PLANES.some(function(p){ return !!draft[p.key]; });
+    if(!hasRating && !noteVal) return;
+    var checkin = {id: uid("exp")};
+    EXPERIENCE_PLANES.forEach(function(p){ if(draft[p.key]) checkin[p.key] = draft[p.key]; });
+    if(noteVal) checkin.note = noteVal;
+    var dI = document.getElementById("expDateSingle__"+key);
+    checkin.date = (dI && dI.value) || todayISO();
+    entries[key].experience.checkins.push(checkin);
+    expDraft[key] = {physique:null, psychique:null, emotionnel:null, intuitif:null};
+    persist();
+    if(view==="stage:"+key) renderStage(key);
+  }
+  function wireExpSpace(key){
+    Array.prototype.forEach.call(document.querySelectorAll('.exp-chip[data-exp-phase="'+key+'"]'), function(btn){
+      btn.addEventListener("click", function(){
+        var plane = btn.getAttribute("data-exp-plane");
+        var val = parseInt(btn.getAttribute("data-exp-val"),10);
+        var draft = expDraftFor(key);
+        draft[plane] = (draft[plane] === val) ? null : val; // clicking the same value again clears it
+        var row = btn.parentElement;
+        Array.prototype.forEach.call(row.querySelectorAll(".exp-chip"), function(c){
+          c.classList.toggle("sel", parseInt(c.getAttribute("data-exp-val"),10) === draft[plane]);
+        });
+        updateExpSaveState(key);
+      });
+    });
+    var note = document.getElementById("expNote__"+key);
+    if(note) note.addEventListener("input", function(){ updateExpSaveState(key); });
+    var saveBtn = document.getElementById("expSaveBtn__"+key);
+    if(saveBtn) saveBtn.addEventListener("click", function(){ saveExpCheckin(key); });
+    updateExpSaveState(key);
+  }
+
+  function wireStageEvents(phaseKey){
+    // phase-text drawer
+    var genBtn = document.getElementById("phaseTextGenBtn");
+    if(genBtn) genBtn.addEventListener("click", function(){ generatePhaseText(phaseKey); });
+    var editBtn = document.getElementById("phaseTextEditBtn");
+    if(editBtn) editBtn.addEventListener("click", function(){ openPhaseTextEditComposer(phaseKey); });
+
+    // a) espace d'accueil — manuscrit de la session en composition
+    Array.prototype.forEach.call(document.querySelectorAll("[data-doc-upload]"), function(btn){
+      var ph = btn.getAttribute("data-phase"), sp = btn.getAttribute("data-space");
+      btn.addEventListener("click", function(){
+        pendingUploadPhase = ph; pendingUploadSpace = sp;
+        document.getElementById("docFileInput").click();
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-sort]"), function(btn){
+      btn.addEventListener("click", function(){ openSessionManuscriptComposer(btn.getAttribute("data-phase"), btn.getAttribute("data-sort")); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-discard]"), function(btn){
+      btn.addEventListener("click", function(){ discardDoc(btn.getAttribute("data-phase"), btn.getAttribute("data-space"), btn.getAttribute("data-discard")); });
+    });
+    var manuscriptEditBtn = document.querySelector('[data-manuscript-edit][data-phase="'+phaseKey+'"]');
+    if(manuscriptEditBtn) manuscriptEditBtn.addEventListener("click", function(){ openSessionManuscriptComposer(phaseKey, null); });
+    var manuscriptRemoveBtn = document.querySelector('[data-manuscript-remove][data-phase="'+phaseKey+'"]');
+    if(manuscriptRemoveBtn) manuscriptRemoveBtn.addEventListener("click", function(){ clearSessionManuscriptDraft(phaseKey); renderStage(phaseKey); });
+
+    // b) rédaction poïétique — témoignage de la session en composition
+    var ta = document.getElementById(sid(phaseKey,"session","composeText"));
+    if(ta) ta.addEventListener("input", function(){ updateSessionSaveState(phaseKey); });
+    var saveSessionBtn = document.getElementById(sid(phaseKey,"session","saveBtn"));
+    if(saveSessionBtn) saveSessionBtn.addEventListener("click", function(){ saveNewSession(phaseKey); });
+    updateSessionSaveState(phaseKey);
+
+    // c) + d) analyse poïétique / praxéologique — par session
+    Array.prototype.forEach.call(document.querySelectorAll('[data-analyse-gen][data-phase="'+phaseKey+'"]'), function(btn){
+      btn.addEventListener("click", function(){ generateAnalyse(phaseKey, btn.getAttribute("data-session")); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-consentir]"), function(btn){
+      btn.addEventListener("click", function(){ respondElement(btn.getAttribute("data-phase"), btn.getAttribute("data-session"), btn.getAttribute("data-lens"), btn.getAttribute("data-consentir"), "consentir", ""); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-commenter]"), function(btn){
+      btn.addEventListener("click", function(){ openAutoComposer(btn.getAttribute("data-phase"), btn.getAttribute("data-session"), btn.getAttribute("data-lens"), btn.getAttribute("data-commenter"), "commenter"); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-ajuster]"), function(btn){
+      btn.addEventListener("click", function(){ openAutoComposer(btn.getAttribute("data-phase"), btn.getAttribute("data-session"), btn.getAttribute("data-lens"), btn.getAttribute("data-ajuster"), "ajuster"); });
+    });
+
+    // compilation (à l'échelle de l'étape, à travers toutes les sessions)
+    var compilGenBtn = document.getElementById("compilGenBtn__"+phaseKey);
+    if(compilGenBtn) compilGenBtn.addEventListener("click", function(){ generateCompilation(phaseKey); });
+    var compilEditBtn = document.getElementById("compilEditBtn__"+phaseKey);
+    if(compilEditBtn) compilEditBtn.addEventListener("click", function(){ openCompilationEditComposer(phaseKey); });
+
+    // expérience d'écriture — self-assessment (inchangé, à l'échelle de l'étape)
+    wireExpSpace(phaseKey);
+  }
+
+  function updateSessionSaveState(phaseKey){
+    var ta = document.getElementById(sid(phaseKey,"session","composeText"));
+    var btn = document.getElementById(sid(phaseKey,"session","saveBtn"));
+    if(!btn) return;
+    var hasText = !!(ta && ta.value.trim());
+    var hasManuscript = !!sessionDraftManuscript(phaseKey);
+    btn.disabled = !(hasText || hasManuscript);
+  }
+
+  function clearSessionManuscriptDraft(phaseKey){
+    sessionManuscriptDraft[phaseKey] = null;
+    pendingManuscriptBlob[phaseKey] = null;
+  }
+
+  function saveNewSession(phaseKey){
+    var ta = document.getElementById(sid(phaseKey,"session","composeText"));
+    var temoignage = ta ? ta.value.trim() : "";
+    var manuscript = sessionDraftManuscript(phaseKey);
+    if(!temoignage && !manuscript) return;
+    var dI = document.getElementById(sid(phaseKey,"session","dateSingle"));
+    var session = {
+      id: uid("s"),
+      date: (dI && dI.value) || todayISO(),
+      manuscript: manuscript,
+      temoignage: temoignage,
+      analysePoietique: [],
+      analysePraxeologique: []
+    };
+    entries[phaseKey].sessions.push(session);
+    if(manuscript && manuscript.kind === "image" && pendingManuscriptBlob[phaseKey]){
+      journalFileBlobs[session.id] = pendingManuscriptBlob[phaseKey];
+    }
+    clearSessionManuscriptDraft(phaseKey);
+    persist();
+    renderStage(phaseKey);
+    setTimeout(function(){
+      var list = document.querySelectorAll('.session-card[data-session]');
+      if(list && list.length) list[0].classList.add("entry-new");
+    }, 30);
+  }
+
+  /* ---------- sample() material + error handling ---------- */
+  // Matière d'UNE session — le témoignage de cette session seule, tel que generateAnalyse() le lit.
+  function sessionMaterialFor(phaseKey, sessionId, capChars){
+    var sess = findSession(phaseKey, sessionId);
+    var text = sess ? (sess.temoignage||"").trim() : "";
+    if(!text) return { text:"", truncated:false, empty:true };
+    var truncated = text.length > capChars;
+    return { text: truncated ? text.slice(0, capChars) : text, truncated: truncated, empty:false };
+  }
+  // Les témoignages de TOUTES les sessions d'une étape, bout à bout — sans étêtage de date —
+  // utilisé pour l'affichage (« texte final », « texte intégral ») et par generateOntoAmorce().
+  function allTemoignagesText(phaseKey){
+    return (entries[phaseKey].sessions || []).map(function(s){ return (s.temoignage||"").trim(); }).filter(Boolean).join("\n\n");
+  }
+  // Même matière que allTemoignagesText(), mais plafonnée en gardant les sessions les plus
+  // récentes d'abord — utilisé pour un envoi à sample().
+  function phaseMaterialFor(phaseKey, capChars){
+    var list = (entries[phaseKey].sessions || []).filter(function(s){ return (s.temoignage||"").trim(); });
+    var chosen = [], total = 0, truncated = false;
+    for(var i=list.length-1; i>=0; i--){
+      var s = list[i];
+      var chunk = "["+entryDateLabel(s)+"] " + s.temoignage.trim();
+      if(total + chunk.length + 2 > capChars){ truncated = true; break; }
+      chosen.unshift(chunk);
+      total += chunk.length + 2;
+    }
+    return { text: chosen.join("\n\n"), truncated: truncated, empty: chosen.length===0 };
+  }
+
+  // Remplace classifySampleError() — plus de notion de capacité "non accordée"/"cachée"
+  // (sampleUnavailable reste toujours false : voir apiCall()) puisque la génération passe
+  // maintenant par un vrai backend, toujours annoncé dans l'interface. Seule distinction
+  // qui compte encore : annulé par la personne, ou erreur à afficher.
+  function classifyApiError(err){
+    if(err && err.name === "AbortError") return {kind:"cancelled"};
+    var code = err && err.code;
+    var MSG = {
+      rate_limited: "Trop de demandes pour l'instant — réessaie dans un moment.",
+      missing_api_key: "La génération n'est pas configurée sur ce serveur — préviens la personne qui gère cette app.",
+      empty_completion: "Aucun texte produit — réessaie, ou avec moins de matériau.",
+      invalid_json: "La réponse n'était pas exploitable telle quelle — réessaie.",
+      upstream_error: "Un problème technique est survenu — réessaie.",
+      unknown_slug: "Ce lien n'est plus reconnu — recharge la page."
+    };
+    return {kind:"error", msg: (code && MSG[code]) || "La génération a échoué."};
+  }
+  // Convertit un File/Blob en {mediaType, dataBase64} pour le joindre à /api/analyser —
+  // seul moyen de transmettre l'image au backend, puisque le fichier lui-même ne vit
+  // qu'en mémoire de cet onglet (voir journalFileBlobs plus haut). Plafonné à 5 Mo.
+  var MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+  function fileToInlineImage(file){
+    if(!file || file.size > MAX_IMAGE_BYTES) return Promise.resolve(null);
+    return new Promise(function(resolve){
+      var reader = new FileReader();
+      reader.onload = function(){
+        var result = String(reader.result || "");
+        var comma = result.indexOf(",");
+        if(comma < 0){ resolve(null); return; }
+        resolve({ mediaType: file.type || "image/png", dataBase64: result.slice(comma+1) });
+      };
+      reader.onerror = function(){ resolve(null); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function statusHtmlFor(msg, isErr, showCancel, onCancel, areaId){
+    var el = document.getElementById(areaId);
+    if(!el) return;
+    el.className = "retour-status" + (isErr ? " err" : "");
+    el.innerHTML = "";
+    var span = document.createElement("span");
+    span.textContent = msg;
+    el.appendChild(span);
+    if(showCancel){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = "Annuler";
+      btn.addEventListener("click", onCancel);
+      el.appendChild(btn);
+    }
+  }
+  function clearStatus(areaId){
+    var el = document.getElementById(areaId);
+    if(el){ el.className = "retour-status"; el.innerHTML = ""; }
+  }
+
+  // Préserve le brouillon de témoignage de la NOUVELLE session en composition — pas celui d'une
+  // session déjà enregistrée — across le re-rendu que génère une génération d'analyse.
+  function withSessionDraftPreserved(phaseKey, fn){
+    var ta = document.getElementById(sid(phaseKey,"session","composeText"));
+    var draft = ta ? ta.value : "";
+    fn();
+    if(view === "stage:"+phaseKey){
+      var ta2 = document.getElementById(sid(phaseKey,"session","composeText"));
+      if(ta2 && draft){ ta2.value = draft; updateSessionSaveState(phaseKey); }
+    }
+  }
+
+  /* ---- c) + d) generate analyse phénoménologique for ONE session — always both lenses, one action ---- */
+  function generateAnalyse(phaseKey, sessionId, opts){
+    opts = opts || {};
+    var sess = findSession(phaseKey, sessionId);
+    if(!sess) return;
+    var idPoi = analyseStatusId(phaseKey, sessionId, "poietique");
+    var idPrax = analyseStatusId(phaseKey, sessionId, "praxeologique");
+    var mat = sessionMaterialFor(phaseKey, sessionId, 12000);
+    if(mat.empty){
+      statusHtmlFor("Le témoignage de cette session est vide pour l'instant — écris quelques mots avant de générer une analyse.", true, false, null, idPoi);
+      statusHtmlFor("Le témoignage de cette session est vide pour l'instant — écris quelques mots avant de générer une analyse.", true, false, null, idPrax);
+      return;
+    }
+    var btns = document.querySelectorAll('[data-analyse-gen][data-phase="'+phaseKey+'"][data-session="'+sessionId+'"]');
+    Array.prototype.forEach.call(btns, function(b){ b.disabled = true; });
+    var msg = opts.imagesDropped ? "Analyse en cours (sans l'image — trop volumineuse pour être jointe ici, à partir du texte seul)…" : "Analyse en cours…";
+    function onCancel(){ var c = activeAbort["analyse:"+phaseKey+":"+sessionId]; if(c){ try{ c.abort(); }catch(e){} } }
+    statusHtmlFor(msg, false, true, onCancel, idPoi);
+    statusHtmlFor(msg, false, true, onCancel, idPrax);
+
+    var candidateImage = opts.skipImages ? null : manuscriptImageForSession(sess);
+
+    function proceed(inlineImage){
+      var ctl = new AbortController();
+      activeAbort["analyse:"+phaseKey+":"+sessionId] = ctl;
+      var body = { slug: SLUG, phaseKey: phaseKey, temoignage: mat.text };
+      if(inlineImage) body.image = inlineImage;
+      apiCall("POST", "/api/analyser", body, ctl.signal).then(function(data){
+        activeAbort["analyse:"+phaseKey+":"+sessionId] = null;
+        function toElements(arr){
+          return (Array.isArray(arr) ? arr : []).map(function(o){
+            return { id: uid("el"), registre: registreOf(o.registre) ? o.registre : "psychique", geste: gesteOf(o.geste) ? o.geste : "constat", text: String(o.text||"").trim(), response: null };
+          }).filter(function(e){ return !!e.text; });
+        }
+        sess.analysePoietique = (sess.analysePoietique || []).concat(toElements(data.poietique));
+        sess.analysePraxeologique = (sess.analysePraxeologique || []).concat(toElements(data.praxeologique));
+        persist();
+        if(view === "stage:"+phaseKey) withSessionDraftPreserved(phaseKey, function(){ renderStage(phaseKey); });
+      }, function(err){
+        activeAbort["analyse:"+phaseKey+":"+sessionId] = null;
+        var c = classifyApiError(err);
+        if(c.kind === "cancelled"){
+          if(view === "stage:"+phaseKey){ clearStatus(idPoi); clearStatus(idPrax); Array.prototype.forEach.call(btns, function(b){ b.disabled = false; }); }
+          return;
+        }
+        if(view === "stage:"+phaseKey){
+          statusHtmlFor(c.msg, true, false, null, idPoi); statusHtmlFor(c.msg, true, false, null, idPrax);
+          Array.prototype.forEach.call(btns, function(b){ b.disabled = false; });
+        }
+      });
+    }
+
+    if(!candidateImage){ proceed(null); return; }
+    fileToInlineImage(candidateImage).then(function(inlineImage){
+      if(!inlineImage && !opts.skipImages){
+        var msg2 = "Analyse en cours (l'image déposée n'a pas pu être jointe — trop volumineuse pour être jointe ici)…";
+        statusHtmlFor(msg2, false, true, onCancel, idPoi);
+        statusHtmlFor(msg2, false, true, onCancel, idPrax);
+      }
+      proceed(inlineImage);
+    });
+  }
+
+  /* ---- respond to an analyse element — Consentir / Commenter / Ajuster ---- */
+  function respondElement(phaseKey, sessionId, lens, elementId, kind, personText){
+    var sess = findSession(phaseKey, sessionId);
+    if(!sess) return;
+    var arrKey = lens === "praxeologique" ? "analysePraxeologique" : "analysePoietique";
+    var arr = sess[arrKey] || [];
+    var el = null;
+    arr.forEach(function(e){ if(e.id===elementId) el = e; });
+    if(!el) return;
+    el.response = { kind: kind, personText: personText || "", d: nowLabel() };
+    persist();
+    if(view === "stage:"+phaseKey) withSessionDraftPreserved(phaseKey, function(){ renderStage(phaseKey); });
+  }
+
+  /* ---- generate compilation (compiles responded elements from both lenses, across ALL sessions) ---- */
+  function generateCompilation(phaseKey){
+    var s = stageOf(phaseKey);
+    var respondedAll = [];
+    (entries[phaseKey].sessions || []).forEach(function(sess){
+      ["poietique","praxeologique"].forEach(function(lens){
+        var arrKey = lens === "praxeologique" ? "analysePraxeologique" : "analysePoietique";
+        (sess[arrKey] || []).forEach(function(e){
+          if(e.response) respondedAll.push({el:e, lens:lens, session:sess});
+        });
+      });
+    });
+    if(respondedAll.length === 0) return;
+    var statusId = "compilStatus__"+phaseKey;
+    var btn = document.getElementById("compilGenBtn__"+phaseKey);
+    if(btn) btn.disabled = true;
+    statusHtmlFor("Rédaction en cours…", false, true, function(){
+      var c = activeAbort["compilation:"+phaseKey];
+      if(c){ try{ c.abort(); }catch(e){} }
+    }, statusId);
+
+    var ctl = new AbortController();
+    activeAbort["compilation:"+phaseKey] = ctl;
+    var lines = respondedAll.map(function(item){
+      var e=item.el, lensLabel = item.lens==="praxeologique"?"Praxéologique":"Poïétique";
+      var rg = registreOf(e.registre); var gs = gesteOf(e.geste);
+      var trace = e.response.kind === "consentir" ? "(la personne a consenti tel quel)" :
+        e.response.kind === "commenter" ? "(commentaire de la personne : « " + e.response.personText + " »)" :
+        "(la personne a ajusté, dans ses propres mots : « " + e.response.personText + " »)";
+      return "— [" + lensLabel + " · " + (rg?rg.label:e.registre) + " / " + (gs?gs.label:e.geste) + "] " + e.text + " " + trace;
+    });
+
+    apiCall("POST", "/api/compilation-synthese", { slug: SLUG, phaseKey: phaseKey, lignes: lines }, ctl.signal).then(function(data){
+      activeAbort["compilation:"+phaseKey] = null;
+      entries[phaseKey].compilation = { text: data.text.trim(), d: nowLabel() };
+      persist();
+      if(view === "stage:"+phaseKey) renderStage(phaseKey);
+    }, function(err){
+      activeAbort["compilation:"+phaseKey] = null;
+      var c = classifyApiError(err);
+      if(c.kind === "cancelled"){ if(view === "stage:"+phaseKey){ clearStatus(statusId); if(btn) btn.disabled = false; } return; }
+      if(view === "stage:"+phaseKey){ statusHtmlFor(c.msg, true, false, null, statusId); if(btn) btn.disabled = false; }
+    });
+  }
+
+  /* ---- phase explanation text generation ---- */
+  function generatePhaseText(phaseKey){
+    var s = stageOf(phaseKey);
+    var statusId = "phaseTextStatus__"+phaseKey;
+    var btn = document.getElementById("phaseTextGenBtn");
+    if(btn) btn.disabled = true;
+    statusHtmlFor("Rédaction en cours…", false, true, function(){
+      var c = activeAbort["phaseText:"+phaseKey];
+      if(c){ try{ c.abort(); }catch(e){} }
+    }, statusId);
+    var ctl = new AbortController();
+    activeAbort["phaseText:"+phaseKey] = ctl;
+    apiCall("POST", "/api/texte-etape", { slug: SLUG, phaseKey: phaseKey }, ctl.signal).then(function(data){
+      activeAbort["phaseText:"+phaseKey] = null;
+      var paras = String(data.text||"").trim().split(/\n\s*\n/).map(function(p){return p.trim();}).filter(Boolean);
+      if(!PROJECT.phaseTextOverrides) PROJECT.phaseTextOverrides = {};
+      PROJECT.phaseTextOverrides[phaseKey] = paras.length ? paras : [String(data.text||"").trim()];
+      persistProject();
+      if(view === "stage:"+phaseKey) renderStage(phaseKey);
+    }, function(err){
+      activeAbort["phaseText:"+phaseKey] = null;
+      var c = classifyApiError(err);
+      if(c.kind === "cancelled"){ if(view === "stage:"+phaseKey){ clearStatus(statusId); if(btn) btn.disabled = false; } return; }
+      if(view === "stage:"+phaseKey){ statusHtmlFor(c.msg, true, false, null, statusId); if(btn) btn.disabled = false; }
+    });
+  }
+
+  /* ---- 5b) méta-analyse phénoménologique (phase 6) — un segment par lens, chacun indépendant ---- */
+  function generateMetaAnalyse(lens){
+    var lines = [];
+    phaseStages().forEach(function(s){
+      respondedElementsForPhaseLens(s.key, lens).forEach(function(item){
+        var e = item.el;
+        var rg = registreOf(e.registre); var gs = gesteOf(e.geste);
+        var trace = e.response.kind === "consentir" ? "(consenti tel quel)" :
+          e.response.kind === "commenter" ? "(commentaire : « " + e.response.personText + " »)" :
+          "(ajusté, dans ses propres mots : « " + e.response.personText + " »)";
+        lines.push("— [" + stageDisplayName(s) + " · " + (rg?rg.label:e.registre) + " / " + (gs?gs.label:e.geste) + "] " + e.text + " " + trace);
+      });
+    });
+    if(lines.length === 0) return;
+    var lensLabel = lens === "poietique" ? "poïétique" : "praxéologique";
+    var statusId = "metaAnalyseStatus__"+lens;
+    var btn = document.getElementById("metaAnalyseGenBtn__"+lens);
+    if(btn) btn.disabled = true;
+    statusHtmlFor("Rédaction en cours…", false, true, function(){
+      var c = activeAbort["metaAnalyse:"+lens];
+      if(c){ try{ c.abort(); }catch(e){} }
+    }, statusId);
+
+    var ctl = new AbortController();
+    activeAbort["metaAnalyse:"+lens] = ctl;
+    apiCall("POST", "/api/meta-analyse", { slug: SLUG, lens: lens, lignes: lines }, ctl.signal).then(function(data){
+      activeAbort["metaAnalyse:"+lens] = null;
+      entries.naissance.metaAnalyse[lens] = { text: data.text.trim(), d: nowLabel() };
+      persist();
+      if(view === "stage:naissance") renderNaissance();
+    }, function(err){
+      activeAbort["metaAnalyse:"+lens] = null;
+      var c = classifyApiError(err);
+      if(c.kind === "cancelled"){ if(view === "stage:naissance"){ clearStatus(statusId); if(btn) btn.disabled = false; } return; }
+      if(view === "stage:naissance"){ statusHtmlFor(c.msg, true, false, null, statusId); if(btn) btn.disabled = false; }
+    });
+  }
+
+  /* ---------- phase 6 : "Ce qu'il en naît" ---------- */
+  // 5a) Texte intégral — les cinq écritures de phase, mises bout à bout, calculées à l'affichage
+  // (aucune donnée dupliquée) ; 5b) Méta-analyse phénoménologique, en deux segments indépendants.
+  function renderNaissance(){
+    var s = stageOf("naissance");
+    var st = stageStatus(s);
+    var pillClass = st==="done"?"done":st==="current"?"current":"upcoming";
+    var pillLabel = st==="done"?"Complété":st==="current"?"En cours":"À venir";
+
+    var html = '<div class="crumb">Étape 06 / 06 · '+esc(PROJECT.poieticTitle)+'</div>';
+    html += '<div class="view-head"><div><h2><span class="flame-h">🌱</span>'+esc(stageDisplayName(s))+'</h2>' +
+      '<p class="working-title">'+esc(s.subtitle)+'</p>' +
+      '<p class="stage-blurb">'+esc(s.blurb)+'</p></div>' +
+      '<span class="pill '+pillClass+'" style="margin-top:6px;">'+pillLabel+'</span></div>';
+
+    html += phaseTextDrawerHtml(s);
+    html += coachingNoteBlockHtml("naissance");
+
+    html += '<div class="sub-head first"><span class="letter">📖</span><h4>Texte intégral</h4></div>';
+    html += '<p class="named-space-hint">Les cinq écritures de phase, mises bout à bout — le fil continu du cycle, avant toute lecture.</p>';
+    phaseStages().forEach(function(ps){
+      var text = allTemoignagesText(ps.key).trim();
+      html += '<div class="recit-movement">';
+      html += '<div class="rm-head"><span class="rm-num">0'+ps.num+'</span><h3>'+esc(stageDisplayName(ps))+'</h3></div>';
+      html += text ? '<p class="rm-text">'+esc(text)+'</p>' : '<p class="rm-text empty">(rien d’écrit à cette étape pour l’instant)</p>';
+      html += '</div>';
+    });
+    html += signatureLine(nowLabel());
+
+    var ma = entries.naissance.metaAnalyse;
+    html += '<div class="sub-head"><span class="letter">🌱</span><h4>Méta-analyse phénoménologique</h4></div>';
+    html += '<p class="named-space-hint">Une relecture d’ensemble du cycle, dans les deux mêmes lentilles que l’analyse de chaque étape — poïétique, puis praxéologique — à partir de tout ce qui a été consenti, commenté ou ajusté.</p>';
+    html += metaAnalyseSegmentHtml("poietique", ma.poietique);
+    html += metaAnalyseSegmentHtml("praxeologique", ma.praxeologique);
+
+    // Du potentiel à l'incarnation — fenêtre d'écriture pour énoncer un constat : le désir ontologique initial
+    // qui a poussé à créer ce projet, celui au bout duquel l'état du potentiel devient l'état
+    // de l'incarnation. Distinct de l'auto-évaluation à quatre plans propre à chaque phase.
+    // Sub-head « closing » : mouvement de clôture du cycle, visuellement détaché des deux
+    // sections précédentes par une marge et un liseré plus marqués.
+    html += '<div class="sub-head closing"><span class="letter">🕯️</span><h4>Du potentiel à l’incarnation</h4></div>';
+    html += constatOntologiqueBlockHtml();
+
+    document.getElementById("main").innerHTML = html;
+    wireNaissanceEvents();
+    wireOntoCanvas();
+
+    // phase-text drawer wiring (shared helper expects a phaseKey)
+    var genBtn = document.getElementById("phaseTextGenBtn");
+    if(genBtn) genBtn.addEventListener("click", function(){ generatePhaseText("naissance"); });
+    var editBtn = document.getElementById("phaseTextEditBtn");
+    if(editBtn) editBtn.addEventListener("click", function(){ openPhaseTextEditComposer("naissance"); });
+  }
+
+  function metaAnalyseSegmentHtml(lens, seg){
+    var lensLabel = lens === "poietique" ? "Poïétique" : "Praxéologique";
+    var hasSource = phaseStages().some(function(s){ return respondedElementsForPhaseLens(s.key, lens).length > 0; });
+    var html = '<div class="recit-card lens-'+lens+'"><div class="lbl"><span>'+lensLabel+'</span><div class="lbl-actions">';
+    if(!sampleUnavailable){
+      html += '<button class="recit-edit-btn" id="metaAnalyseGenBtn__'+lens+'"'+(!hasSource?' disabled':'')+'>'+(seg && seg.text ? "↻ Régénérer" : "Générer")+'</button>';
+    }
+    html += '<button class="recit-edit-btn" id="metaAnalyseEditBtn__'+lens+'">✎ Modifier</button>';
+    html += '</div></div>';
+    if(seg && (seg.text||"").trim()){
+      html += '<p class="txt">'+esc(seg.text)+'</p>';
+    } else {
+      html += '<p class="txt empty">Pas encore écrite — elle compile les éléments '+esc(lensLabel.toLowerCase())+'s auxquels tu as répondu, à travers les cinq étapes.</p>';
+    }
+    html += '</div><div id="metaAnalyseStatus__'+lens+'" style="margin-bottom:18px;"></div>';
+    return html;
+  }
+
+  function wireNaissanceEvents(){
+    ["poietique","praxeologique"].forEach(function(lens){
+      var genBtn = document.getElementById("metaAnalyseGenBtn__"+lens);
+      if(genBtn) genBtn.addEventListener("click", function(){ generateMetaAnalyse(lens); });
+      var editBtn = document.getElementById("metaAnalyseEditBtn__"+lens);
+      if(editBtn) editBtn.addEventListener("click", function(){ openMetaAnalyseEditComposer(lens); });
+    });
+  }
+
+  /* ---- constat ontologique — fenêtre d'écriture qui referme le cycle en phase 6 : le désir
+     ontologique initial qui a poussé à créer ce projet, celui au bout duquel l'état du potentiel
+     devient l'état de l'incarnation. Remplace, à ce seul emplacement, l'ancienne auto-évaluation
+     à quatre plans (celle-ci reste inchangée à chacune des cinq phases précédentes). ---- */
+  function ontoMetabarHtml(){
+    var html = '<div class="space-metabar"><div class="a-dates">';
+    html += '<div class="a-datefield"><label>Date</label><input type="date" id="ontoDateSingle" value="'+todayISO()+'"></div>';
+    html += '</div></div>';
+    return html;
+  }
+  function ontoJournalListHtml(){
+    var list = entries.experienceGlobale.journal;
+    if(list.length===0){
+      return '<p class="empty-col">Rien d’écrit ici pour l’instant.</p>';
+    }
+    var html = "";
+    list.forEach(function(e){
+      html += '<div class="journal-entry"><div class="d">'+esc(entryDateLabel(e))+'</div><p>'+esc(e.t)+'</p></div>';
+    });
+    return html;
+  }
+  function constatOntologiqueBlockHtml(){
+    var html = '<div class="named-space legs-space" style="margin-top:14px;">';
+    html += '<p class="named-space-hint" style="margin-top:0;">Le témoignage tenu au fil des cinq étapes précédentes est désormais un texte achevé — un legs immatériel, distinct de l’œuvre elle-même. Un espace pour énoncer un constat : la raison initiale — le désir ontologique — qui a poussé à créer ce projet, celui au bout duquel on fait de l’état de son potentiel l’état de son incarnation.</p>';
+
+    html += '<p class="compil-source-label">Matière de départ — écriture d’Inception</p>';
+    var inceptionText = allTemoignagesText("inception");
+    html += inceptionText.trim()
+      ? '<div class="compil-source">'+esc(inceptionText)+'</div>'
+      : '<div class="compil-source empty">Rien d’écrit à l’étape Inception pour l’instant.</div>';
+
+    html += ontoMetabarHtml();
+    html += '<div class="space-canvas"><textarea id="ontoCanvasText" placeholder="Ici j’identifie le désir ontologique qui m’a porté à créer ce projet"></textarea></div>';
+    html += '<div class="canvas-actions" style="justify-content:space-between;">';
+    html += !sampleUnavailable && inceptionText.trim()
+      ? '<button class="add-btn" id="ontoAmorceBtn">Proposer une amorce</button>'
+      : '<span></span>';
+    html += '<button class="save-btn" id="ontoCanvasSaveBtn" style="margin-top:0; width:auto;" disabled>Ajouter au constat</button></div>';
+    html += '<div id="ontoAmorceStatus"></div>';
+    html += '<div class="journal-list" id="ontoJournalList">' + ontoJournalListHtml() + '</div>';
+    html += '</div>';
+    return html;
+  }
+  function wireOntoCanvas(){
+    var ta = document.getElementById("ontoCanvasText");
+    if(ta){
+      ta.addEventListener("input", function(){
+        var btn = document.getElementById("ontoCanvasSaveBtn");
+        if(btn) btn.disabled = ta.value.trim().length===0;
+      });
+    }
+    var saveBtn = document.getElementById("ontoCanvasSaveBtn");
+    if(saveBtn) saveBtn.addEventListener("click", saveOntoEntry);
+    var amorceBtn = document.getElementById("ontoAmorceBtn");
+    if(amorceBtn) amorceBtn.addEventListener("click", generateOntoAmorce);
+  }
+  /* ---- amorce générée à partir de l'écriture d'Inception — une hypothèse à reprendre, jamais
+     un texte qui s'impose ; garde-fou par confirmation si le canevas contient déjà du texte ---- */
+  function generateOntoAmorce(){
+    var statusId = "ontoAmorceStatus";
+    var mat = phaseMaterialFor("inception", 8000);
+    if(mat.empty){
+      statusHtmlFor("L’écriture d’Inception est vide pour l’instant — écris-y quelques mots avant de proposer une amorce.", true, false, null, statusId);
+      return;
+    }
+    function proceed(){
+      var btn = document.getElementById("ontoAmorceBtn");
+      if(btn) btn.disabled = true;
+      statusHtmlFor("Rédaction en cours…", false, true, function(){
+        var c = activeAbort["ontoAmorce"];
+        if(c){ try{ c.abort(); }catch(e){} }
+      }, statusId);
+      var ctl = new AbortController();
+      activeAbort["ontoAmorce"] = ctl;
+      apiCall("POST", "/api/onto-amorce", { slug: SLUG, materiau: mat.text, tronque: mat.truncated }, ctl.signal).then(function(data){
+        activeAbort["ontoAmorce"] = null;
+        var ta = document.getElementById("ontoCanvasText");
+        if(ta){
+          ta.value = data.text.trim();
+          var saveBtn = document.getElementById("ontoCanvasSaveBtn");
+          if(saveBtn) saveBtn.disabled = ta.value.trim().length===0;
+        }
+        clearStatus(statusId);
+        if(btn) btn.disabled = false;
+      }, function(err){
+        activeAbort["ontoAmorce"] = null;
+        var c = classifyApiError(err);
+        if(c.kind === "cancelled"){ clearStatus(statusId); if(btn) btn.disabled = false; return; }
+        statusHtmlFor(c.msg, true, false, null, statusId); if(btn) btn.disabled = false;
+      });
+    }
+    var ta = document.getElementById("ontoCanvasText");
+    if(ta && ta.value.trim().length > 0){
+      askConfirm("Une amorce proposée remplacera le texte déjà présent dans cet espace d’écriture. Continuer ?", proceed);
+    } else {
+      proceed();
+    }
+  }
+  function saveOntoEntry(){
+    var ta = document.getElementById("ontoCanvasText");
+    if(!ta) return;
+    var text = ta.value.trim();
+    if(!text) return;
+    var entry = {id: uid("j"), t: text};
+    var dI = document.getElementById("ontoDateSingle");
+    entry.date = (dI && dI.value) || todayISO();
+    entries.experienceGlobale.journal.push(entry);
+    persist();
+    if(view === "stage:naissance") renderNaissance();
+  }
+
+  /* ---------- journal complet ---------- */
+  // Liste, pour une étape, le témoignage de chaque session — l'équivalent de l'ancien
+  // journal-entry par entrée, une entrée par session plutôt que par ligne du journal.
+  function sessionJournalListHtml(phaseKey){
+    var list = entries[phaseKey].sessions || [];
+    if(list.length===0){
+      return '<p class="empty-col">Rien d’écrit ici pour l’instant.</p>';
+    }
+    var html = "";
+    list.forEach(function(sess){
+      var fileTag = sess.manuscript ? ' <span class="file-tag">'+esc(sess.manuscript.kind)+' · '+esc(sess.manuscript.name)+'</span>' : '';
+      var text = (sess.temoignage||"").trim() || "(aucun témoignage pour cette session)";
+      html += '<div class="journal-entry"><div class="d">'+esc(entryDateLabel(sess)) + fileTag + '</div><p>'+esc(text)+'</p></div>';
+    });
+    return html;
+  }
+  function renderJournal(){
+    var html = '<div class="crumb">La matière brute</div>';
+    html += '<div class="view-head"><div><h2>Journal complet</h2>' +
+      '<p class="stage-blurb">L’ensemble des témoignages de sessions, étape par étape — tout ce qui a été écrit ou déposé, avant toute lecture. Le texte intégral et la méta-analyse qui s’en dégagent se lisent dans « Ce qu’il en naît ».</p></div></div>';
+
+    phaseStages().forEach(function(s){
+      html += '<div class="journal-phase">';
+      html += '<div class="ch-head"><span class="ch-num">0'+s.num+'</span><h3>'+esc(stageDisplayName(s))+'</h3></div>';
+      html += '<p class="stage-blurb" style="margin:2px 0 8px;">'+esc(s.blurb)+'</p>';
+      html += '<div class="ch-space-label">Rédaction poïétique</div>';
+      html += '<div class="journal-list">' + sessionJournalListHtml(s.key) + '</div>';
+      html += '</div>';
+    });
+
+    document.getElementById("main").innerHTML = html;
+  }
+
+  /* ---------- praxéologie ---------- */
+  function renderPraxeologie(){
+    var html = '<div class="crumb">Une deuxième lecture du même matériau</div>';
+    html += '<div class="view-head"><div><h2>Praxéologie</h2>' +
+      '<p class="working-title">Ce que « '+esc(PROJECT.poieticTitle)+' » révèle de ma manière de faire</p></div></div>';
+    html += '<p class="praxeologie-intro">Le récit poïétique retient ce que ce projet a signifié. La <b>praxéologie</b> — l’étude (<i>logos</i>) de l’agir (<i>praxis</i>) — retient <em>comment</em> j’y ai fonctionné : elle regarde la manière de faire plutôt que ce qui a été vécu, et en dégage une méthode. Ce qui, au fil des étapes, semble se répéter, se confirmer ou se corriger devient un principe — une méthode qui se précise, projet après projet, plutôt qu’un bilan qui se referme avec celui-ci.</p>';
+    html += '<p class="praxeologie-intro" style="margin-top:-18px;">Trois manières dont une occasion se signale : un <b>problème à solutionner</b> qui revient, une <b>découverte</b> — un motif qu’on reconnaît à distance — ou un <b>apprentissage</b> qui change la façon de s’y prendre la prochaine fois. Un problème garde un état — <em>ouvert</em> ou <em>résolu</em> — qu’un clic sur son étiquette suffit à faire basculer, une fois qu’il cesse de revenir. La lecture praxéologique de l’analyse phénoménologique, à chaque étape, peut aussi faire remonter des principes ici, une fois consentis.</p>';
+
+    var list = praxeologie;
+    if(list.length===0){
+      html += '<p class="empty-col">Aucun principe repéré pour l’instant.</p>';
+    } else {
+      html += '<div class="principle-list">';
+      list.forEach(function(p, i){
+        var stageLabel = p.stage ? (stageOf(p.stage) ? stageDisplayName(stageOf(p.stage)) : p.stage) : "Général";
+        var pt = praxTypeOf(p.type) || {label:"Apprentissage"};
+        var statusBadge = "";
+        if(p.type === "probleme"){
+          var st = p.status === "resolu" ? "resolu" : "ouvert";
+          statusBadge = '<button type="button" class="p-status '+st+'" data-idx="'+i+'">'+(st==="resolu" ? "✓ Résolu" : "● Ouvert")+'</button>';
+        }
+        html += '<div class="principle"><div class="p-meta"><span class="p-date">'+esc(p.d)+'</span>' +
+          '<span class="p-type">'+esc(pt.label)+'</span>' +
+          statusBadge +
+          '<span class="p-stage">'+esc(stageLabel)+'</span></div>' +
+          '<p class="p-text">'+esc(p.t)+'</p></div>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="praxeologie-add"><button class="add-btn" id="addPrincipeBtn">+ Ajouter un principe</button></div>';
+
+    document.getElementById("main").innerHTML = html;
+    var btn = document.getElementById("addPrincipeBtn");
+    if(btn) btn.addEventListener("click", openPraxComposer);
+    Array.prototype.forEach.call(document.querySelectorAll(".p-status"), function(b){
+      b.addEventListener("click", function(){ togglePrincipleStatus(parseInt(b.getAttribute("data-idx"), 10)); });
+    });
+  }
+
+  function togglePrincipleStatus(idx){
+    var p = praxeologie[idx];
+    if(!p || p.type !== "probleme") return;
+    var next = (p.status === "resolu") ? "ouvert" : "resolu";
+    apiCall("PATCH", "/api/praxeologie/" + encodeURIComponent(p.id), { slug: SLUG, status: next }).then(function(data){
+      p.status = (data && data.entry && data.entry.status) || next;
+      renderPraxeologie();
+    }, function(err){
+      showIoToast("La mise à jour a échoué (" + ((err && err.code) || "erreur") + ").", true);
+    });
+  }
+
+  /* ---------- portfolio des projets — « Nouveau projet » archive au lieu d'effacer ---------- */
+  // L'ancien shouldArchiveCurrent()/archiveCurrentProject() côté client est remplacé par
+  // POST /api/project/archive, qui décide lui-même, côté serveur, s'il y a quelque chose
+  // à archiver (voir lib/storage.ts, archiveActiveAndCreateNew) — même règle que
+  // shouldArchiveCurrent() dans l'artefact Base, simplement déplacée côté serveur.
+  function restoreProject(id){
+    var rec = null;
+    savedProjects.forEach(function(p){ if(p.id===id) rec = p; });
+    if(!rec) return;
+    askConfirm("Reprendre « " + rec.project.poieticTitle + " » remplacera le projet actuellement affiché — celui-ci sera à son tour archivé ici avant l'échange. Continuer ?", function(){
+      apiCall("POST", "/api/project/restore", { slug: SLUG, projectId: id }).then(function(data){
+        savedProjects = savedProjects.filter(function(p){ return p.id !== id; });
+        if(data.archivedPrevious) savedProjects.push(archivedRecordFromRow(data.archivedPrevious));
+        PROJECT = data.restored.project;
+        entries = normalizeEntries(data.restored.entries);
+        setView("overview");
+      }, function(err){
+        showIoToast("La reprise du projet a échoué (" + ((err && err.code) || "erreur") + ").", true);
+      });
+    });
+  }
+  function deleteSavedProject(id){
+    var rec = null;
+    savedProjects.forEach(function(p){ if(p.id===id) rec = p; });
+    if(!rec) return;
+    askConfirm("Supprimer définitivement « " + rec.project.poieticTitle + " » de tes projets archivés ? Cette action ne peut pas être annulée.", function(){
+      apiCall("POST", "/api/project/delete", { slug: SLUG, projectId: id }).then(function(){
+        savedProjects = savedProjects.filter(function(p){ return p.id !== id; });
+        renderProjects();
+      }, function(err){
+        showIoToast("La suppression a échoué (" + ((err && err.code) || "erreur") + ").", true);
+      });
+    });
+  }
+
+  /* ---------- mes projets (portfolio) ---------- */
+  function renderProjects(){
+    var html = '<div class="crumb">Le portfolio</div>';
+    html += '<div class="view-head"><div><h2>Mes projets</h2>' +
+      '<p class="stage-blurb">Chaque « Nouveau projet » archive ici, plutôt que d’effacer, celui qui était actif — de quoi reprendre un cycle interrompu, ou simplement garder une trace de chacun. La praxéologie, elle, reste commune à tous : une méthode qui se précise, projet après projet, jamais propre à un seul.</p></div></div>';
+
+    html += '<div class="project-current"><div class="pr-info">' +
+      '<span class="pr-title">'+esc(PROJECT.poieticTitle)+'</span>' +
+      '<span class="pr-meta">'+esc([PROJECT.genre, PROJECT.workingTitle].filter(Boolean).join(' · ') || "—")+'</span>' +
+      '<span class="pr-meta">'+countSessionsAll()+' session(s)</span></div>' +
+      '<span class="demo-badge" style="margin-top:0;color:var(--stage-done); border-color:var(--stage-done); background:var(--stage-done-soft);">Actif</span></div>';
+
+    if(savedProjects.length===0){
+      html += '<p class="empty-col">Aucun projet archivé pour l’instant — « Commencer un nouveau projet » en conservera un ici, la prochaine fois.</p>';
+    } else {
+      html += '<div class="project-list">';
+      savedProjects.slice().reverse().forEach(function(p){
+        var proj = p.project;
+        var count = countSessionsAllFor(p.entries);
+        html += '<div class="project-row"><div class="pr-info">' +
+          '<span class="pr-title">'+esc(proj.poieticTitle)+'</span>' +
+          '<span class="pr-meta">'+esc([proj.genre, proj.workingTitle].filter(Boolean).join(' · ') || "—")+(proj.isDemo?' · démonstration':'')+'</span>' +
+          '<span class="pr-meta">'+count+' entrée(s) · archivé le '+esc(p.archivedAt)+'</span></div>' +
+          '<div class="pr-actions"><button class="add-btn" data-restore="'+p.id+'">↺ Reprendre</button>' +
+          '<button class="reset-link" data-delete-proj="'+p.id+'">Supprimer</button></div></div>';
+      });
+      html += '</div>';
+    }
+
+    document.getElementById("main").innerHTML = html;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-restore]"), function(btn){
+      btn.addEventListener("click", function(){ restoreProject(btn.getAttribute("data-restore")); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-delete-proj]"), function(btn){
+      btn.addEventListener("click", function(){ deleteSavedProject(btn.getAttribute("data-delete-proj")); });
+    });
+  }
+
+  /* ---------- about ---------- */
+  function renderAbout(){
+    var html = '<div class="crumb">Le principe</div>';
+    html += '<div class="view-head"><div><h2>La méthode</h2></div></div>';
+    html += '<div class="about-copy">';
+    html += '<p class="kicker">Deux volets, une seule matière brute</p>';
+    html += '<p>Scriptus Viator accompagne un projet de création en parallèle de sa réalisation. Chaque projet comporte deux volets tenus côte à côte : le <b>projet-activité</b>, la création elle-même — ce qui est fait — et le <b>projet-témoignage</b>, le récit poïétique qui observe le geste en train de se faire.</p>';
+    html += '<p>Chacune des cinq premières étapes accumule, au fil du temps, plusieurs <b>sessions</b> d’écriture-création — une session à la fois : une version du manuscrit déposée dans l’<b>espace d’accueil</b>, et le témoignage de cette session rédigé juste après, dans un geste poïétique distinct du manuscrit lui-même. Rien n’est trié d’avance entre le regard sur le projet et le regard sur soi : chaque session, en une seule voix, devient ensuite le matériau de sa propre analyse.</p>';
+    html += '<p class="kicker">Deux fenêtres, une session</p>';
+    html += '<p>Une fois une session enregistrée, deux fenêtres d’<b>analyse phénoménologique</b> s’ouvrent pour elle, côte à côte : une lecture <b>poïétique</b> — ce que l’expérience donne à sentir — et une lecture <b>praxéologique</b> — ce qu’elle apprend sur la manière de faire. Chaque observation, structurée par registre de l’expérience et geste d’attention, agit comme un <b>objet provocateur</b>, jamais un constat qui s’impose — et chaque session, à son tour, peut en accumuler plusieurs.</p>';
+    html += '<p class="kicker">Poïétique et auto-poïétique</p>';
+    html += '<p>Deux postures se répondent. La posture <b>poïétique</b> est celle de l’app, dans son analyse. La posture <b>auto-poïétique</b> est celle de la personne, en retour sur chaque élément proposé : elle peut <b>Consentir</b>, <b>Commenter</b>, ou <b>Ajuster</b> — directement, à même l’analyse, sans détour par une rubrique séparée.</p>';
+    html += '<p>Ce n’est pas l’analyse de l’app qui compte comme trace du processus créateur, mais le geste auto-poïétique qu’elle rend possible — l’app provoque, la personne fait. Ce geste s’inscrit alors comme un <em>fait agissant</em>, dans sa capacité phénoménologique propre. L’app ne classe jamais à la place de la personne : l’écriture n’est jamais triée automatiquement, et Consentir / Commenter / Ajuster reste un geste explicite, jamais automatique.</p>';
+    html += '<p class="kicker">Toujours l’acte d’écrire, jamais l’événement</p>';
+    html += '<p>Ce que Scriptus Viator observe est toujours l’acte d’écrire lui-même, jamais l’événement qu’il rapporte. Que ce dont on écrit soit en train de se vivre ou déjà survenu ne change donc rien à la charpente : chaque session porte une seule date, celle où elle a été écrite. Les six étapes gardent toujours le même nom.</p>';
+    html += '<p class="kicker">Registres de l’expérience et gestes d’attention</p>';
+    html += '<p>Chaque élément proposé par l’app se rattache à un registre — quel plan de l’expérience il touche — et à un geste d’attention — comment il regarde le matériau. Les deux se combinent librement.</p>';
+    html += '<div class="method-steps" style="gap:12px;">';
+    REGISTRES.forEach(function(r){
+      html += '<div class="ms-block"><div class="ms"><b>'+esc(r.label)+'</b></div><div class="method-full"><p>'+esc(r.hint)+'</p></div></div>';
+    });
+    GESTES.forEach(function(g){
+      html += '<div class="ms-block"><div class="ms"><b>'+esc(g.label)+'</b></div><div class="method-full"><p>'+esc(g.hint)+'</p></div></div>';
+    });
+    html += '</div>';
+    html += '<p class="kicker">Six étapes</p>';
+    html += '<div class="method-steps">';
+    STAGES.forEach(function(s){
+      html += '<div class="ms-block"><div class="ms"><b>0'+s.num+' — '+esc(stageDisplayName(s))+(s.subtitle?' — '+esc(s.subtitle):'')+'</b> — '+esc(s.blurb)+'</div>' +
+        '<div class="method-full">' + fullTextHtml(s) + '</div></div>';
+    });
+    html += '</div>';
+    html += '<p class="kicker" style="margin-top:8px;">Une assise neurophénoménologique</p>';
+    html += '<p>Tout ce dont il est question ici relève de l’ordre phénoménologique dans la mesure où cela se vit dans l’incarnation. Les quatre plans de l’<b>Expérience d’écriture</b> — physique, psychique, émotionnel, intuitif — sont constants tout au long du cycle, mais ne le traversent pas au même titre : un registre domine à chaque étape, sans jamais rendre les autres inactifs. L’intuition et l’intéroception, par exemple, sont des facteurs neurophénoménologiques constants d’un bout à l’autre, mais dominants à l’Inception et au Post-Partum — l’un l’envers de l’autre, deux bornes passives et ressenties qui encadrent le cycle.</p>';
+    html += '<p>Cette hypothèse distingue l’<b>expérience d’un processus de création</b> — ce que Scriptus Viator observe — de l’<b>impulsion créatrice</b>, qui est plutôt ce que l’on cherche à définir lorsqu’on parle de création au sens courant. La première se déploie dans la durée, à travers un cycle entier et ses registres changeants ; la seconde n’en est que l’étincelle. C’est une assise qui continuera de se préciser.</p>';
+    html += '<p class="kicker" style="margin-top:8px;">Dans chaque étape — des sessions, puis deux blocs communs</p>';
+    html += '<p><b>a) Espace d’accueil</b> — dépose, une à la fois, la version du manuscrit propre à la session en train de se composer. <b>b) Rédaction poïétique</b> — le témoignage de cette session, avec une date manuelle. Une fois « Enregistrer cette session » cliqué, la session rejoint la liste de l’étape — la plus récente en tête — et deux fenêtres s’ouvrent pour elle : <b>c) Analyse poïétique</b> et <b>d) Analyse praxéologique</b>, chacune générée à partir du seul témoignage de cette session, chacune avec son propre bouton « Générer ». La personne répond à chaque élément proposé : Consentir, Commenter, ou Ajuster. C’est ce geste-là, pas l’analyse de l’app, qui devient la trace réelle du processus créateur.</p>';
+    html += '<p>À l’échelle de l’étape entière, deux blocs communs referment chaque visite : l’<b>Expérience d’écriture</b> — un pouls plus léger, distinct des sessions et de leur analyse (voir plus bas) — et la <b>Compilation</b> — le texte final, issu des témoignages de toutes les sessions mis bout à bout, et une synthèse générée qui compile les éléments — des deux lectures, à travers toutes les sessions — auxquels la personne a répondu, en un texte cohérent, éditable et régénérable.</p>';
+    html += '<p>En « Ce qu’il en naît », deux derniers gestes referment le cycle : le <b>texte intégral</b> assemble les témoignages des cinq étapes bout à bout, et la <b>méta-analyse phénoménologique</b> relit l’ensemble du cycle, elle aussi en deux segments — poïétique et praxéologique — chacun généré et modifiable indépendamment.</p>';
+    html += '<p class="kicker" style="margin-top:8px;">Expérience d’écriture</p>';
+    html += '<p>À chaque étape, un espace plus léger — l’<b>Expérience d’écriture</b> — invite à un bref pouls de ce que le geste même d’écrire a coûté ou donné, sur quatre plans : <b>physique</b>, <b>psychique</b>, <b>émotionnel</b>, <b>intuitif</b>. Ce n’est pas une troisième lecture du matériau comme le sont les sessions et leur analyse ci-dessus, mais une auto-évaluation ponctuelle, sans génération ni objet provocateur — un simple constat, daté, qu’on peut répéter au fil de l’étape. En « Ce qu’il en naît », un espace distinct referme le cycle : <b>Du potentiel à l’incarnation</b> — non plus une auto-évaluation, mais une fenêtre d’écriture pour énoncer un constat : la raison initiale — le désir ontologique — qui a poussé à créer ce projet, celui au bout duquel on fait de l’état de son potentiel l’état de son incarnation. Une amorce, générée à partir de l’écriture d’Inception, peut proposer un premier jet à reprendre.</p>';
+    html += '<p class="kicker" style="margin-top:8px;">Poïétique et praxéologie</p>';
+    html += '<p>Le témoignage poïétique observe l’acte créateur pour ce qu’il donne à sentir, sans chercher tout de suite à s’en servir. La <b>praxéologie</b> — du grec <i>praxis</i>, l’agir, et <i>logos</i>, l’étude — en est une deuxième lecture, à distance, du même matériau : non plus « qu’est-ce que je vis », mais « qu’est-ce que cela m’apprend sur ma manière de fonctionner ». Elle vit dans sa propre rubrique, à son rythme — une méthode qui se précise projet après projet, plutôt qu’un bilan qui se referme avec chacun.</p>';
+    html += '<p>Chaque principe praxéologique s’y reconnaît comme l’un de trois signaux : un <b>problème à solutionner</b> qui revient, une <b>découverte</b> — un motif qu’on reconnaît à distance — ou un <b>apprentissage</b> qui change la façon de s’y prendre la prochaine fois. Seul le problème porte un état, <em>ouvert</em> ou <em>résolu</em> — les deux autres se consignent une fois pour toutes, sans suite à tenir.</p>';
+    html += '<p class="kicker" style="margin-top:8px;">Sagesse et autodidaxie</p>';
+    html += '<p>Ce savoir n’a besoin d’aucune autorité extérieure, institutionnelle ou autre : il naît, s’incarne, évolue, se vérifie et se transmet à même l’expérience vécue — ce qui le rend légitime de facto, une fibre à part entière du patrimoine humain. <b>Autonomie</b>, <b>authenticité</b> et <b>autodidaxie</b> sont les conditions qui permettent sa constitution en <b>sagesse</b>, entendue ici comme le savoir né de l’expérience. L’exprimer — par le récit — c’est le rendre reconnaissable, et l’inscrire au sein du patrimoine humain à titre de legs existentiel.</p>';
+    html += '<p class="kicker" style="margin-top:8px;">Un cycle, pas une ligne droite</p>';
+    html += '<p>« Ce qu’il en naît » précède une nouvelle Inception : c’est le temps entre la fin d’un cycle de création et le début d’un nouveau cycle — le terreau, enrichi, prêt à être ensemencé de nouveau.</p>';
+    html += '<p class="kicker" style="margin-top:8px;">Le prototype</p>';
+    html += '<p>Ce prototype est une base vierge : rien n’y est pré-rempli, chaque session, chaque témoignage, chaque principe praxéologique part de ce que tu y écris. Tout ce qui est ajouté reste dans ce navigateur et peut être effacé à tout moment. Générer une analyse, une compilation, une méta-analyse, ou l’explication d’une étape envoie la matière déjà écrite à un modèle, sur le compte Claude de la personne qui consulte la page — chaque section le rappelle au moment où elle s’applique.</p>';
+    html += '</div>';
+    document.getElementById("main").innerHTML = html;
+  }
+
+  /* ---------- view switch ---------- */
+  function setView(v){
+    view = v;
+    renderProjectCard();
+    renderSpine();
+    Array.prototype.forEach.call(document.querySelectorAll(".rail-link[data-view]"), function(b){
+      b.classList.toggle("active", v===b.getAttribute("data-view"));
+    });
+    if(v==="overview") renderOverview();
+    else if(v==="journal") renderJournal();
+    else if(v==="praxeologie") renderPraxeologie();
+    else if(v==="projects") renderProjects();
+    else if(v==="about") renderAbout();
+    else if(v==="welcome") renderWelcome();
+    else if(v.indexOf("stage:")===0) renderStage(v.slice(6));
+    document.getElementById("main").scrollTop = 0;
+    window.scrollTo(0,0);
+  }
+
+  /* ---------- composer (side panel) ---------- */
+  var overlay = document.getElementById("overlay");
+  var panel = document.getElementById("panel");
+  var textarea = document.getElementById("entryText");
+
+  function resetPanelChrome(){
+    document.getElementById("panelPreview").hidden = true;
+    document.getElementById("panelPreview").innerHTML = "";
+    document.getElementById("panelHint").hidden = true;
+    document.getElementById("praxeologieFields").hidden = true;
+    document.getElementById("newProjectFields").hidden = true;
+    textarea.style.display = "";
+    textarea.value = "";
+  }
+
+  // Compose le manuscrit d'une session en train de se composer — soit depuis un fichier encore
+  // en attente (docId non nul, dans la file "accueil" de cette phase), soit en modifiant le
+  // manuscrit déjà confirmé (docId nul : relit sessionManuscriptDraft[phaseKey] directement).
+  function openSessionManuscriptComposer(phaseKey, docId){
+    var item = null, fromQueue = !!docId;
+    if(fromQueue){
+      queueFor(qKey(phaseKey,ACCUEIL)).forEach(function(d){ if(d.id===docId) item = d; });
+      if(!item) return;
+    } else {
+      var draft = sessionDraftManuscript(phaseKey);
+      if(!draft) return;
+      item = { kind: draft.kind, name: draft.name, extractedText: draft.extractedText, loading:false, previewUrl:null };
+    }
+    composer.mode = "session-manuscript";
+    composer.phaseKey = phaseKey;
+    composer.spaceKey = ACCUEIL;
+    composer.docId = fromQueue ? docId : null;
+    resetPanelChrome();
+    textarea.value = item.extractedText || "";
+    document.getElementById("panel-title").textContent = "Décrire le manuscrit de cette session";
+    document.getElementById("composerStage").textContent = stageDisplayName(stageOf(phaseKey)) + " — Espace d’accueil";
+    var NO_AUTO_HINT = {
+      image: "Aucune transcription automatique dans cette maquette — regarde l'image, puis mets en mots ce qu'elle donne à sentir.",
+      audio: "Aucune transcription automatique dans cette maquette — écoute l'enregistrement, puis mets en mots ce qu'il donne à sentir.",
+      video: "Aucune transcription automatique dans cette maquette — regarde la vidéo, puis mets en mots ce qu'elle donne à sentir.",
+      document: "Aucune lecture automatique dans cette maquette — ouvre le document par ailleurs (Word, PDF…), puis mets en mots ce qu'il donne à comprendre ou à retenir.",
+      other: "Aucun aperçu automatique dans cette maquette pour ce type de fichier — mets en mots ce qu'il t'inspire ou ce que tu veux en retenir."
+    };
+    var wasAutoRead = item.kind === "text" || (item.kind === "document" && !!item.extractedText);
+    var preview = document.getElementById("panelPreview");
+    preview.innerHTML = '<div class="doc-preview-box">' + docPreviewHtml(item) + '<div class="doc-name">'+esc(item.name)+'</div></div>';
+    preview.hidden = false;
+    var hint = document.getElementById("panelHint");
+    hint.textContent = wasAutoRead ? "Texte extrait automatiquement — modifie-le si besoin avant de confirmer le manuscrit." : (NO_AUTO_HINT[item.kind]||NO_AUTO_HINT.other);
+    hint.hidden = false;
+    document.getElementById("saveEntry").textContent = "Confirmer le manuscrit";
+    updateSaveState();
+    overlay.classList.add("open");
+    setTimeout(function(){ textarea.focus(); }, 50);
+  }
+
+  function openAutoComposer(phaseKey, sessionId, lens, elementId, gesture){
+    var sess = findSession(phaseKey, sessionId);
+    if(!sess) return;
+    var arrKey = lens === "praxeologique" ? "analysePraxeologique" : "analysePoietique";
+    var arr = sess[arrKey] || [];
+    var el = null;
+    arr.forEach(function(e){ if(e.id===elementId) el = e; });
+    if(!el) return;
+    composer.mode = "auto";
+    composer.phaseKey = phaseKey;
+    composer.sessionId = sessionId;
+    composer.lens = lens;
+    composer.elementId = elementId;
+    composer.gesture = gesture;
+    resetPanelChrome();
+    document.getElementById("panel-title").textContent = gesture === "commenter" ? "Commenter" : "Ajuster";
+    document.getElementById("composerStage").textContent = "Analyse " + (lens==="praxeologique"?"praxéologique":"poïétique") + " — " + stageDisplayName(stageOf(phaseKey)) + " — session du " + entryDateLabel(sess);
+    var preview = document.getElementById("panelPreview");
+    preview.innerHTML = elementCardHtmlStatic(lens, el);
+    preview.hidden = false;
+    var hint = document.getElementById("panelHint");
+    hint.textContent = gesture === "commenter"
+      ? "Ajoute tes propres mots à côté de cet élément, sans le réécrire."
+      : "Réécris cet élément dans tes propres mots — c'est ce texte qui devient la trace, pas la proposition de l'app.";
+    hint.hidden = false;
+    textarea.value = gesture === "ajuster" ? el.text : "";
+    document.getElementById("saveEntry").textContent = "Enregistrer ma réponse";
+    updateSaveState();
+    overlay.classList.add("open");
+    setTimeout(function(){ textarea.focus(); }, 50);
+  }
+
+  function elementCardHtmlStatic(lens, el){
+    var rg = registreOf(el.registre) || {label: el.registre || "—"};
+    var gs = gesteOf(el.geste) || {label: el.geste || "—"};
+    var lensTag = '<span class="lens-tag '+esc(lens)+'">'+(lens==="praxeologique"?"Praxéologique":"Poïétique")+'</span>';
+    return '<div class="element-card static"><div class="element-tags">'+lensTag+'<span class="reg">'+esc(rg.label)+'</span><span class="tag">'+esc(gs.label)+'</span></div>' +
+      '<p class="element-text" style="margin-bottom:0;">'+esc(el.text)+'</p></div>';
+  }
+
+  function openCompilationEditComposer(phaseKey){
+    composer.mode = "compilation-edit";
+    composer.phaseKey = phaseKey;
+    resetPanelChrome();
+    document.getElementById("panel-title").textContent = "Compilation de cette étape";
+    document.getElementById("composerStage").textContent = "Étape — " + stageDisplayName(stageOf(phaseKey));
+    var hint = document.getElementById("panelHint");
+    hint.textContent = "Modifie librement le texte de la compilation de cette phase.";
+    hint.hidden = false;
+    textarea.value = (entries[phaseKey].compilation && entries[phaseKey].compilation.text) || "";
+    document.getElementById("saveEntry").textContent = "Enregistrer la compilation";
+    updateSaveState();
+    overlay.classList.add("open");
+    setTimeout(function(){ textarea.focus(); }, 50);
+  }
+
+  function openMetaAnalyseEditComposer(lens){
+    composer.mode = "meta-analyse-edit";
+    composer.lens = lens;
+    resetPanelChrome();
+    var lensLabel = lens === "praxeologique" ? "Praxéologique" : "Poïétique";
+    document.getElementById("panel-title").textContent = "Méta-analyse — " + lensLabel;
+    document.getElementById("composerStage").textContent = "Ce qu’il en naît";
+    var hint = document.getElementById("panelHint");
+    hint.textContent = "Modifie librement le texte de ce segment de la méta-analyse.";
+    hint.hidden = false;
+    var seg = entries.naissance.metaAnalyse[lens];
+    textarea.value = (seg && seg.text) || "";
+    document.getElementById("saveEntry").textContent = "Enregistrer le segment";
+    updateSaveState();
+    overlay.classList.add("open");
+    setTimeout(function(){ textarea.focus(); }, 50);
+  }
+
+  function openPhaseTextEditComposer(phaseKey){
+    composer.mode = "phase-text-edit";
+    composer.phaseKey = phaseKey;
+    resetPanelChrome();
+    var s = stageOf(phaseKey);
+    document.getElementById("panel-title").textContent = "Comprendre cette étape";
+    document.getElementById("composerStage").textContent = "Explication — " + stageDisplayName(s);
+    var hint = document.getElementById("panelHint");
+    hint.textContent = "Modifie librement ce texte — séparé en paragraphes par une ligne vide.";
+    hint.hidden = false;
+    textarea.value = currentPhaseTexts(s).join("\n\n");
+    document.getElementById("saveEntry").textContent = "Enregistrer le texte";
+    updateSaveState();
+    overlay.classList.add("open");
+    setTimeout(function(){ textarea.focus(); }, 50);
+  }
+
+  function openPraxComposer(){
+    composer.mode = "praxeologie";
+    composer.phaseKey = null;
+    composer.praxType = "apprentissage";
+    resetPanelChrome();
+    document.getElementById("panel-title").textContent = "Nouveau principe";
+    document.getElementById("composerStage").textContent = "Praxéologie";
+    document.getElementById("praxeologieFields").hidden = false;
+    document.getElementById("saveEntry").textContent = "Ajouter le principe";
+    var sel = document.getElementById("praxStageSelect");
+    sel.innerHTML = '<option value="">Général — toutes étapes</option>' +
+      STAGES.map(function(s){ return '<option value="'+s.key+'">'+esc(stageDisplayName(s))+'</option>'; }).join("");
+    renderPraxTypeChips();
+    updateSaveState();
+    overlay.classList.add("open");
+    setTimeout(function(){ textarea.focus(); }, 50);
+  }
+
+  function openNewProjectComposer(){
+    composer.mode = "newproject";
+    composer.phaseKey = null;
+    resetPanelChrome();
+    document.getElementById("panel-title").textContent = "Nouveau projet";
+    document.getElementById("composerStage").textContent = "Remplace le projet affiché, dans ce navigateur";
+    document.getElementById("newProjectFields").hidden = false;
+    textarea.style.display = "none";
+    document.getElementById("saveEntry").textContent = "Créer le projet";
+    document.getElementById("npPoieticTitle").value = "";
+    document.getElementById("npGenre").value = "";
+    document.getElementById("npWorkingTitle").value = "";
+    document.getElementById("npStarted").value = "";
+    document.getElementById("npAuthorName").value = "";
+    document.getElementById("npPlace").value = "";
+    updateSaveState();
+    overlay.classList.add("open");
+    setTimeout(function(){ document.getElementById("npPoieticTitle").focus(); }, 50);
+  }
+
+  function closeComposer(){
+    overlay.classList.remove("open");
+  }
+
+  function renderPraxTypeChips(){
+    var el = document.getElementById("praxTypeChips");
+    el.innerHTML = "";
+    PRAX_TYPES.forEach(function(t){
+      var c = document.createElement("button");
+      c.type="button";
+      c.className = "chip" + (composer.praxType===t.key ? " sel" : "");
+      c.textContent = t.label;
+      c.addEventListener("click", function(){ composer.praxType = t.key; renderPraxTypeChips(); updatePraxTypeHint(); });
+      el.appendChild(c);
+    });
+    updatePraxTypeHint();
+  }
+  function updatePraxTypeHint(){
+    document.getElementById("praxTypeHint").textContent = praxTypeOf(composer.praxType).hint;
+  }
+  function updateSaveState(){
+    if(composer.mode === "newproject"){
+      document.getElementById("saveEntry").disabled = document.getElementById("npPoieticTitle").value.trim().length === 0;
+      return;
+    }
+    document.getElementById("saveEntry").disabled = textarea.value.trim().length === 0;
+  }
+
+  document.getElementById("closePanel").addEventListener("click", closeComposer);
+  overlay.addEventListener("click", function(e){ if(e.target===overlay) closeComposer(); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeComposer(); });
+  textarea.addEventListener("input", updateSaveState);
+  document.getElementById("npPoieticTitle").addEventListener("input", updateSaveState);
+  document.getElementById("newProjectBtn").addEventListener("click", openNewProjectComposer);
+  document.getElementById("docFileInput").addEventListener("change", function(e){
+    if(pendingUploadPhase && pendingUploadSpace && e.target.files && e.target.files.length){
+      // Un seul fichier en attente à la fois pour l'espace d'accueil d'une session — celui
+      // qu'on vient de choisir remplace tout fichier déjà en attente, plutôt que de s'y ajouter.
+      var key = qKey(pendingUploadPhase, pendingUploadSpace);
+      queueFor(key).slice().forEach(function(d){ discardDoc(pendingUploadPhase, pendingUploadSpace, d.id); });
+      handleFiles(pendingUploadPhase, pendingUploadSpace, [e.target.files[0]]);
+    }
+    e.target.value = "";
+  });
+
+  document.getElementById("saveEntry").addEventListener("click", function(){
+    if(composer.mode === "newproject"){
+      var poietic = document.getElementById("npPoieticTitle").value.trim();
+      if(!poietic) return;
+      var newMeta = {
+        poieticTitle: poietic,
+        workingTitle: document.getElementById("npWorkingTitle").value.trim(),
+        genre: document.getElementById("npGenre").value.trim(),
+        started: document.getElementById("npStarted").value.trim(),
+        authorName: document.getElementById("npAuthorName").value.trim(),
+        place: document.getElementById("npPlace").value.trim(),
+        stageStatus: defaultStageStatus(),
+        phaseTextOverrides: {}
+      };
+      var npBtn = document.getElementById("saveEntry");
+      if(npBtn) npBtn.disabled = true;
+      // POST /api/project/archive décide lui-même, côté serveur, s'il y a quelque chose à
+      // archiver (un projet vide n'est jamais archivé — même règle que shouldArchiveCurrent()
+      // dans l'artefact Base), puis crée le nouveau projet vierge ; on y pose ensuite le
+      // titre/genre/etc. que la personne vient de saisir avec un PUT /api/project.
+      apiCall("POST", "/api/project/archive", { slug: SLUG }).then(function(data){
+        if(data.archived) savedProjects.push(archivedRecordFromRow(data.archived));
+        PROJECT = newMeta;
+        entries = blankEntries();
+        return apiCall("PUT", "/api/project", { slug: SLUG, project: projectPayload(), entries: entries });
+      }).then(function(){
+        closeComposer();
+        setView("overview");
+      }, function(err){
+        showIoToast("La création du nouveau projet a échoué (" + ((err && err.code) || "erreur") + ").", true);
+      }).then(function(){
+        if(npBtn) npBtn.disabled = false;
+      });
+      return;
+    }
+
+    var text = textarea.value.trim();
+    if(!text) return;
+
+    if(composer.mode === "praxeologie"){
+      var stageVal = document.getElementById("praxStageSelect").value || null;
+      apiCall("POST", "/api/praxeologie", { slug: SLUG, stage: stageVal, type: composer.praxType, text: text }).then(function(data){
+        praxeologie.push(praxRowToClient(data.entry));
+        closeComposer();
+        if(view==="praxeologie") renderPraxeologie();
+      }, function(err){
+        showIoToast("L'ajout du principe a échoué (" + ((err && err.code) || "erreur") + ").", true);
+      });
+      return;
+    }
+
+    if(composer.mode === "compilation-edit"){
+      entries[composer.phaseKey].compilation = { text: text, d: nowLabel() };
+      persist();
+      closeComposer();
+      if(view === "stage:"+composer.phaseKey) renderStage(composer.phaseKey);
+      return;
+    }
+
+    if(composer.mode === "meta-analyse-edit"){
+      entries.naissance.metaAnalyse[composer.lens] = { text: text, d: nowLabel() };
+      persist();
+      closeComposer();
+      if(view === "stage:naissance") renderNaissance();
+      return;
+    }
+
+    if(composer.mode === "phase-text-edit"){
+      var paras = text.split(/\n\s*\n/).map(function(p){return p.trim();}).filter(Boolean);
+      if(!PROJECT.phaseTextOverrides) PROJECT.phaseTextOverrides = {};
+      PROJECT.phaseTextOverrides[composer.phaseKey] = paras.length ? paras : [text];
+      persistProject();
+      closeComposer();
+      if(view === "stage:"+composer.phaseKey) renderStage(composer.phaseKey);
+      return;
+    }
+
+    if(composer.mode === "auto"){
+      respondElement(composer.phaseKey, composer.sessionId, composer.lens, composer.elementId, composer.gesture, text);
+      closeComposer();
+      return;
+    }
+
+    if(composer.mode === "session-manuscript"){
+      var phaseKeyM = composer.phaseKey;
+      if(composer.docId){
+        // Confirmation initiale depuis la file d'attente de l'espace d'accueil.
+        var keyM = qKey(phaseKeyM, ACCUEIL);
+        var qArrM = queueFor(keyM);
+        var qIdxM = -1, qItemM = null;
+        qArrM.forEach(function(d,i){ if(d.id===composer.docId){ qIdxM=i; qItemM=d; } });
+        if(qItemM){
+          if(qItemM.kind === "image" && qItemM.file) pendingManuscriptBlob[phaseKeyM] = qItemM.file;
+          sessionManuscriptDraft[phaseKeyM] = { name: qItemM.name, kind: qItemM.kind, extractedText: text };
+        }
+        if(qIdxM>-1){
+          if(qArrM[qIdxM].previewUrl){ try{ URL.revokeObjectURL(qArrM[qIdxM].previewUrl); }catch(e){} }
+          qArrM.splice(qIdxM,1);
+        }
+      } else {
+        // Modification du manuscrit déjà confirmé — juste le texte extrait change.
+        var existing = sessionDraftManuscript(phaseKeyM);
+        if(existing) existing.extractedText = text;
+      }
+      closeComposer();
+      if(view === "stage:"+phaseKeyM) renderStage(phaseKeyM);
+      return;
+    }
+  });
+
+  // ---------- confirmation modal (guards every action that overwrites data) ----------
+  var confirmOverlay = document.getElementById("confirmOverlay");
+  var confirmCallback = null;
+  function askConfirm(message, onConfirm){
+    confirmCallback = onConfirm;
+    document.getElementById("confirmMessage").textContent = message;
+    confirmOverlay.classList.add("open");
+  }
+  function closeConfirm(){
+    confirmCallback = null;
+    confirmOverlay.classList.remove("open");
+  }
+  document.getElementById("confirmCancel").addEventListener("click", closeConfirm);
+  confirmOverlay.addEventListener("click", function(e){ if(e.target===confirmOverlay) closeConfirm(); });
+  document.getElementById("confirmOk").addEventListener("click", function(){
+    var cb = confirmCallback;
+    closeConfirm();
+    if(cb) cb();
+  });
+
+  // ---------- local export / import (backup outside the browser) ----------
+  function slugify(s){
+    return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
+      .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "projet";
+  }
+  function showIoToast(msg, isErr){
+    var el = document.getElementById("ioToast");
+    el.textContent = msg;
+    el.classList.toggle("err", !!isErr);
+  }
+  function exportProject(){
+    var payload = {
+      schema: "scriptus-viator-export", version: 5,
+      exportedAt: new Date().toISOString(),
+      project: PROJECT, entries: entries, praxeologie: praxeologie, savedProjects: savedProjects
+    };
+    var json = JSON.stringify(payload, null, 2);
+    var filename = "scriptus-viator-" + slugify(PROJECT.poieticTitle) + "-" + new Date().toISOString().slice(0,10) + ".json";
+    // Téléchargement navigateur standard (Blob + <a download>) — remplace
+    // window.claude.use("downloads"), propre au runtime des artefacts Claude, absent ici.
+    try{
+      var blob = new Blob([json], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      showIoToast("Sauvegarde enregistrée : " + filename, false);
+    }catch(e){
+      showIoToast("La sauvegarde a échoué.", true);
+    }
+  }
+  document.getElementById("exportBtn").addEventListener("click", exportProject);
+
+  document.getElementById("importBtn").addEventListener("click", function(){
+    document.getElementById("importFileInput").click();
+  });
+  document.getElementById("importFileInput").addEventListener("change", function(e){
+    var file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var data;
+      try{ data = JSON.parse(String(reader.result || "")); }catch(err){
+        showIoToast("Ce fichier n'est pas une sauvegarde Scriptus Viator valide.", true);
+        return;
+      }
+      if(!data || data.schema !== "scriptus-viator-export" || !data.project || !data.entries){
+        showIoToast("Ce fichier n'est pas une sauvegarde Scriptus Viator valide.", true);
+        return;
+      }
+      // L'import ne remplace que le projet actif (titre/genre/etc. + entries), via
+      // PUT /api/project — la praxéologie et le portfolio archivé de cette personne, eux,
+      // restent ceux déjà sur le serveur (voir le cahier des charges : l'import "appelle
+      // PUT /api/project avec son contenu").
+      askConfirm("Importer « " + (data.project.poieticTitle || "ce projet") + " » remplacera le projet actif actuellement affiché. Continuer ?", function(){
+        PROJECT = {
+          poieticTitle: data.project.poieticTitle || "Mon projet créateur",
+          workingTitle: data.project.workingTitle || "",
+          genre: data.project.genre || "",
+          started: data.project.started || "",
+          authorName: data.project.authorName || "",
+          place: data.project.place || "",
+          stageStatus: data.project.stageStatus || defaultStageStatus(),
+          phaseTextOverrides: data.project.phaseTextOverrides || {}
+        };
+        entries = normalizeEntries(data.entries);
+        apiCall("PUT", "/api/project", { slug: SLUG, project: projectPayload(), entries: entries }).then(function(){
+          setView("overview");
+          showIoToast("Sauvegarde importée : " + (PROJECT.poieticTitle || ""), false);
+        }, function(err){
+          showIoToast("L'import a échoué (" + ((err && err.code) || "erreur") + ").", true);
+        });
+      });
+    };
+    reader.onerror = function(){ showIoToast("La lecture du fichier a échoué.", true); };
+    reader.readAsText(file);
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll(".rail-link[data-view]"), function(b){
+    b.addEventListener("click", function(){ setView(b.getAttribute("data-view")); });
+  });
+
+  // ---------- bootstrap — remplace l'ancien chargement localStorage synchrone ----------
+  // Sans ?p=<slug> dans l'URL : aucun accès anonyme, un écran l'explique simplement.
+  // Avec un slug inconnu du serveur (404) : un message clair, jamais de création
+  // silencieuse de données orphelines — voir GET /api/project côté backend.
+  function renderInfoScreen(title, text){
+    document.getElementById("projectCard").innerHTML = "";
+    document.getElementById("spine").innerHTML = "";
+    document.getElementById("spineCycleNote").textContent = "";
+    document.getElementById("main").innerHTML =
+      '<div class="welcome-hero">' +
+        '<div class="welcome-mark"><span class="flame">🕯️</span> Scriptus Viator</div>' +
+        '<h2>'+esc(title)+'</h2>' +
+        '<p class="welcome-lede">'+esc(text)+'</p>' +
+      '</div>';
+  }
+  function bootstrap(){
+    if(!SLUG){
+      renderInfoScreen(
+        "Un lien personnel est requis",
+        "Cette page s’ouvre avec le lien personnel que la personne qui t’accompagne t’a transmis — elle seule peut t’en donner un. Sans ce lien, aucun espace ne peut s’afficher ici."
+      );
+      return;
+    }
+    document.getElementById("main").innerHTML = '<p class="empty-col">Chargement…</p>';
+    apiCall("GET", "/api/project?p=" + encodeURIComponent(SLUG)).then(function(data){
+      PROJECT = {
+        poieticTitle: data.project.poieticTitle || "Mon projet créateur",
+        workingTitle: data.project.workingTitle || "",
+        genre: data.project.genre || "",
+        started: data.project.started || "",
+        authorName: data.project.authorName || "",
+        place: data.project.place || "",
+        stageStatus: data.project.stageStatus || defaultStageStatus(),
+        phaseTextOverrides: data.project.phaseTextOverrides || {}
+      };
+      entries = normalizeEntries(data.entries);
+      praxeologie = (data.praxeologie || []).map(praxRowToClient);
+      savedProjects = (data.archivedProjects || []).map(archivedRecordFromRow);
+      coachingNotes = data.coachingNotes || {};
+      var welcomeSeen = true;
+      try{ welcomeSeen = !!localStorage.getItem(WELCOME_KEY); }catch(e){}
+      setView(welcomeSeen ? "overview" : "welcome");
+    }, function(err){
+      if(err && err.code === "unknown_slug"){
+        renderInfoScreen("Ce lien n’est pas reconnu", "Demande un nouveau lien à la personne qui te l’a transmis.");
+        return;
+      }
+      renderInfoScreen("Le chargement a échoué", "Recharge la page — si le problème persiste, préviens la personne qui gère cette app.");
+    });
+  }
+  bootstrap();
+})();
+</script>
+
+</body></html>

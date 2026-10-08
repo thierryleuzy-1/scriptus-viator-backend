@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scriptus Viator — Détail d'une personne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Mêmes tokens que admin.html et l'app (public/index.html) — même famille visuelle. */
+  :root{
+    --bg:#faf9f6; --bg-soft:#f1ede3; --surface:#ffffff; --surface-2:#f4f1ea;
+    --ink:#1b1b18; --muted:#79766c; --border:#e6e2d8; --border-strong:#d9cfba;
+    --accent:#c2410c; --accent-soft:#ffe6d1; --accent-ink:#ffffff; --accent-deep:#7c2d12;
+    --sky:#0369a1; --sky-soft:#e0f2fe; --stage-done:#5c7a52; --stage-done-soft:#dee6d8;
+    --shadow: 27,27,24;
+    --elev-1: 0 1px 2px rgba(var(--shadow),.05), 0 3px 8px -3px rgba(var(--shadow),.10);
+    --elev-2: 0 3px 8px -3px rgba(var(--shadow),.12), 0 12px 26px -10px rgba(var(--shadow),.20);
+    --serif:'Fraunces', Georgia, serif; --sans:'Archivo', -apple-system, 'Segoe UI', sans-serif; --mono:'IBM Plex Mono', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161310; --bg-soft:#1c170f; --surface:#211c14; --surface-2:#2a2317;
+      --ink:#f0e9db; --muted:#a89a84; --border:#3a3123; --border-strong:#4d4029;
+      --accent:#e2894a; --accent-soft:#3d2a1c; --accent-ink:#1a1108; --accent-deep:#f4a969;
+      --sky:#5fc2f2; --sky-soft:#12293a; --stage-done:#8bab7e; --stage-done-soft:#243021; --shadow:0,0,0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161310; --bg-soft:#1c170f; --surface:#211c14; --surface-2:#2a2317;
+    --ink:#f0e9db; --muted:#a89a84; --border:#3a3123; --border-strong:#4d4029;
+    --accent:#e2894a; --accent-soft:#3d2a1c; --accent-ink:#1a1108; --accent-deep:#f4a969;
+    --sky:#5fc2f2; --sky-soft:#12293a; --stage-done:#8bab7e; --stage-done-soft:#243021; --shadow:0,0,0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  main{max-width:860px; margin:0 auto; padding:34px 20px 100px;}
+  .wordmark{display:flex; align-items:baseline; gap:8px; margin-bottom:10px;}
+  .wordmark .flame{font-size:18px;}
+  .wordmark-word{font-family:var(--serif); font-style:italic; font-weight:500; font-size:21px; color:var(--accent-deep);}
+  .wordmark-sub{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);}
+  .back-link{font-family:var(--mono); font-size:11.5px; color:var(--muted); text-decoration:none; display:inline-block; margin-bottom:26px;}
+  .back-link:hover{color:var(--accent);}
+  h1{font-size:26px; margin:0 0 4px; color:var(--accent-deep); font-weight:700;}
+  .person-slug{font-family:var(--mono); font-size:12px; color:var(--muted); margin:0 0 26px;}
+  .lede{color:var(--muted); font-size:14px; max-width:62ch; margin:0 0 26px;}
+  .card{background:var(--surface); border:1px solid var(--border-strong); border-radius:6px; padding:18px 20px; margin-bottom:22px; box-shadow:var(--elev-1);}
+  label{display:block; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:6px;}
+  input[type="text"], input[type="password"]{
+    width:100%; font-family:var(--sans); font-size:14px; color:var(--ink); background:var(--bg-soft);
+    border:1px solid var(--border); border-radius:4px; padding:9px 11px; margin-bottom:14px;
+  }
+  .row{display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;}
+  .row > div{flex:1; min-width:200px;}
+  button{font-family:var(--sans); font-weight:600; font-size:13.5px; border:none; border-radius:4px; padding:10px 16px; cursor:pointer; background:var(--accent); color:var(--accent-ink);}
+  button:hover{filter:brightness(1.05);}
+  button:disabled{opacity:.5; cursor:not-allowed;}
+  button.secondary{background:var(--surface-2); color:var(--ink); border:1px solid var(--border);}
+  .msg{font-family:var(--mono); font-size:12px; color:var(--muted); min-height:16px; margin-top:4px;}
+  .msg.err{color:var(--accent);}
+  .empty{color:var(--muted); font-style:italic; font-size:13px; padding:10px 0;}
+  [hidden]{display:none !important;}
+
+  /* ---------- étapes ---------- */
+  .phase-section{margin:38px 0 10px; padding-top:28px; border-top:1px solid var(--border-strong);}
+  .phase-section:first-of-type{margin-top:26px; padding-top:0; border-top:none;}
+  .phase-head{display:flex; align-items:baseline; gap:10px; margin-bottom:4px;}
+  .phase-head .num{font-family:var(--mono); font-size:11px; color:var(--muted);}
+  .phase-head h2{margin:0; font-size:22px; font-weight:700; color:var(--accent-deep);}
+  .phase-sub{color:var(--muted); font-size:13px; margin:0 0 18px;}
+
+  /* ---- éditeur de note de coaching ---- */
+  .coach-editor{border:1px solid var(--border-strong); border-left:4px solid var(--accent-deep); border-radius:6px; background:var(--surface); padding:16px 18px 14px; margin-bottom:24px; box-shadow:var(--elev-1);}
+  .coach-editor-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:9px; flex-wrap:wrap;}
+  .coach-editor-head h4{margin:0; font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--mono); font-weight:600; color:var(--accent-deep);}
+  .coach-editor-hint{color:var(--muted); font-size:12px; margin:0 0 10px; max-width:64ch;}
+  .coach-editor textarea{
+    display:block; width:100%; min-height:100px; border:1px solid var(--border); border-radius:4px; background:var(--bg-soft);
+    padding:11px 13px; font-family:var(--sans); font-size:14px; line-height:1.6; color:var(--ink); resize:vertical; margin-bottom:10px;
+  }
+  .coach-editor-foot{display:flex; align-items:center; justify-content:flex-end; gap:12px;}
+  .io-toast{font-family:var(--mono); font-size:10.5px; color:var(--muted); min-height:14px;}
+  .io-toast.err{color:var(--accent);}
+  .io-toast.ok{color:var(--stage-done);}
+
+  /* ---- sessions (copié de public/index.html pour la même grammaire visuelle) ---- */
+  .sessions-list-label{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:22px 0 14px; display:flex; align-items:center; gap:8px;}
+  .sessions-list-label::after{content:""; flex:1; height:1px; background:var(--border);}
+  .session-card{border:1px solid var(--border-strong); border-radius:6px; background:var(--surface); padding:18px 20px 20px; margin-bottom:20px; box-shadow:var(--elev-1);}
+  .session-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px;}
+  .session-date{font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+  .session-manuscript-tag{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; border:1px solid var(--border); border-radius:2px; padding:1px 6px; color:var(--muted); background:var(--surface-2);}
+  details.manuscript-details{border:1px solid var(--border); border-radius:4px; background:var(--bg-soft); margin-bottom:14px;}
+  details.manuscript-details summary{cursor:pointer; padding:8px 11px; font-family:var(--mono); font-size:10.5px; color:var(--muted); list-style:none;}
+  details.manuscript-details summary::-webkit-details-marker{display:none;}
+  details.manuscript-details .doc-text-preview{padding:0 12px 11px; margin:0; font-size:12px; color:var(--ink); font-style:italic; line-height:1.5;}
+  .session-temoignage{font-family:var(--serif); font-size:15.5px; line-height:1.72; color:var(--ink); white-space:pre-wrap; margin:0 0 4px;}
+  .session-temoignage.empty{font-style:italic; color:var(--muted); font-size:13.5px; font-family:var(--sans);}
+  .session-no-manuscript{font-size:12px; color:var(--muted); font-style:italic; margin:0 0 14px;}
+
+  .named-space{border:1px solid var(--border-strong); border-top:3px solid var(--border-strong); border-radius:6px; background:var(--surface-2); padding:16px 18px 18px; margin:14px 0 0;}
+  .named-space.lens-poietique{border-top-color:var(--sky);}
+  .named-space.lens-praxeologique{border-top-color:var(--accent);}
+  .named-space-head{display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:10px; flex-wrap:wrap;}
+  .named-space-head h3{margin:0; font-size:14px; font-weight:700; color:var(--ink);}
+  .lens-badge{font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em; padding:2px 7px; border-radius:2px; flex:none;}
+  .lens-badge.poietique{color:var(--sky); background:var(--sky-soft);}
+  .lens-badge.praxeologique{color:var(--accent); background:var(--accent-soft);}
+
+  .element-card{border:1px solid var(--border-strong); border-radius:4px; background:var(--surface); padding:12px 14px; margin-bottom:10px; box-shadow:var(--elev-1);}
+  .element-card:last-child{margin-bottom:0;}
+  .element-tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;}
+  .element-tags .reg, .element-tags .tag{font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); background:var(--surface-2); border:1px solid var(--border); padding:1px 6px; border-radius:2px;}
+  .element-tags .lens-tag{font-family:var(--mono); font-size:9px; text-transform:uppercase; letter-spacing:.05em; padding:1px 6px; border-radius:2px; border:1px solid currentColor; color:var(--accent);}
+  .element-tags .lens-tag.poietique{color:var(--sky);}
+  .element-text{font-family:var(--sans); font-size:14px; line-height:1.6; color:var(--ink); margin:0 0 8px;}
+  .element-pending{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted);}
+  .element-response{border-top:1px solid var(--border); margin-top:4px; padding-top:9px; display:flex; flex-direction:column; gap:4px;}
+  .element-response .resp-kind{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; padding:1px 7px; border-radius:10px; align-self:flex-start;}
+  .element-response.consentir .resp-kind{background:var(--stage-done-soft); color:var(--stage-done);}
+  .element-response.commenter .resp-kind{background:var(--accent-soft); color:var(--accent);}
+  .element-response.ajuster .resp-kind{background:var(--sky-soft); color:var(--sky);}
+  .element-response .resp-date{font-family:var(--mono); font-size:10px; color:var(--muted);}
+  .element-response .resp-text{font-style:italic; font-size:13.5px; color:var(--ink); margin:2px 0 0;}
+  .empty-col{font-size:12.5px; color:var(--muted); font-style:italic; padding:4px 0 0;}
+
+  .compil-source-label{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:18px 0 8px;}
+  .compil-source{border:1px dashed var(--border); border-radius:4px; padding:13px 15px; background:var(--bg-soft); font-family:var(--serif); font-size:14.5px; line-height:1.72; color:var(--ink); white-space:pre-wrap; max-height:340px; overflow-y:auto;}
+  .compil-source.empty{font-style:italic; color:var(--muted); font-size:13.5px; font-family:var(--sans);}
+  .recit-card{border:1px solid var(--border-strong); border-radius:4px; background:var(--surface); padding:14px 16px; margin-top:4px;}
+  .recit-card .lbl{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px;}
+  .recit-card .txt{font-family:var(--serif); font-size:15px; line-height:1.7; color:var(--ink); white-space:pre-wrap; margin:0;}
+  .recit-card .txt.empty{font-style:italic; color:var(--muted); font-size:13.5px; font-family:var(--sans);}
+
+  /* ---- texte intégral (naissance) ---- */
+  .recit-movement{margin-bottom:18px;}
+  .rm-head{display:flex; align-items:baseline; gap:8px; margin-bottom:6px;}
+  .rm-num{font-family:var(--mono); font-size:10.5px; color:var(--muted);}
+  .rm-head h3{margin:0; font-size:14.5px; font-weight:700; color:var(--ink);}
+  .rm-text{font-family:var(--serif); font-size:14.5px; line-height:1.72; color:var(--ink); white-space:pre-wrap; margin:0;}
+  .rm-text.empty{font-style:italic; color:var(--muted); font-size:13px; font-family:var(--sans);}
+
+  /* ---- projets archivés ---- */
+  details.archived-project{border:1px solid var(--border-strong); border-radius:6px; background:var(--surface); margin-bottom:14px; box-shadow:var(--elev-1);}
+  details.archived-project summary{cursor:pointer; padding:14px 18px; list-style:none;}
+  details.archived-project summary::-webkit-details-marker{display:none;}
+  details.archived-project summary::before{content:"▸  ";}
+  details.archived-project[open] summary::before{content:"▾  ";}
+  details.archived-project[open] summary{border-bottom:1px solid var(--border);}
+  .archived-title{font-family:var(--sans); font-weight:700; font-size:15px; color:var(--ink);}
+  .archived-date{font-family:var(--mono); font-size:11px; color:var(--muted); margin-left:8px;}
+  .archived-body{padding:4px 18px 18px;}
+
+  /* ---- praxéologie ---- */
+  .prax-entry{border-bottom:1px solid var(--border); padding:12px 0;}
+  .prax-entry:last-child{border-bottom:none;}
+  .prax-tags{display:flex; gap:6px; align-items:center; margin-bottom:6px; flex-wrap:wrap;}
+  .prax-tags .tag{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); background:var(--surface-2); border:1px solid var(--border); padding:1px 7px; border-radius:2px;}
+  .prax-tags .status{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; padding:1px 7px; border-radius:10px;}
+  .prax-tags .status.ouvert{background:var(--accent-soft); color:var(--accent);}
+  .prax-tags .status.resolu{background:var(--stage-done-soft); color:var(--stage-done);}
+  .prax-text{margin:0; font-size:13.5px; color:var(--ink); line-height:1.6;}
+  .prax-d{font-family:var(--mono); font-size:10px; color:var(--muted);}
+
+  .meta-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:12px; font-size:13px;}
+  .meta-grid .l{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); display:block; margin-bottom:2px;}
+  .meta-grid .v{color:var(--ink);}
+
+  /* ---- expérience d'écriture (auto-évaluation) + journal ontologique (phase 6) — même
+     grammaire visuelle que public/index.html (.exp-history / .exp-entry / .exp-score-tag) ---- */
+  .exp-history{display:flex; flex-direction:column; gap:1px; border-top:1px solid var(--border); margin-top:14px;}
+  .exp-entry{padding:10px 0; border-bottom:1px solid var(--border);}
+  .exp-entry-d{font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:5px;}
+  .exp-entry-scores{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:5px;}
+  .exp-score-tag{font-family:var(--mono); font-size:9.5px; color:var(--muted); border:1px solid var(--border); padding:1px 7px; border-radius:10px;}
+  .exp-entry-note{font-size:12.5px; color:var(--ink); font-style:italic; margin:0;}
+  .onto-journal-entry{border-bottom:1px solid var(--border); padding:11px 0;}
+  .onto-journal-entry:last-child{border-bottom:none;}
+  .onto-journal-d{font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:5px;}
+  .onto-journal-text{font-family:var(--serif); font-size:14.5px; line-height:1.68; color:var(--ink); white-space:pre-wrap; margin:0;}
+</style>
+</head>
+<body>
+<main>
+  <div class="wordmark"><span class="flame">🕯️</span><span><span class="wordmark-word">Scriptus Viator</span><br><span class="wordmark-sub">Administration</span></span></div>
+  <a class="back-link" href="admin.html">← Retour à la liste des personnes</a>
+
+  <div id="keyGate" class="card" hidden>
+    <h2 style="margin:0 0 14px; font-size:15px;">Clé d'accès</h2>
+    <p class="lede" style="margin-bottom:14px;">Colle ici la clé d'administration. Elle reste seulement dans cet onglet.</p>
+    <div class="row">
+      <div><input type="password" id="adminKeyInput" placeholder="Clé d'administration"></div>
+      <div style="flex:none;"><button id="keySubmit">Entrer</button></div>
+    </div>
+    <p class="msg err" id="keyMsg"></p>
+  </div>
+
+  <div id="personArea" hidden></div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var STAGE_NAMES = {
+    inception: "Inception", gestation: "Gestation", creation: "Création",
+    "mise-au-monde": "Mise au monde", "post-partum": "Post-Partum", naissance: "Ce qu'il en naît"
+  };
+  var TEMOIGNAGE_PHASES = ["inception","gestation","creation","mise-au-monde","post-partum"];
+  var COACHING_PHASES = TEMOIGNAGE_PHASES.concat(["naissance"]);
+  var REGISTRE_LABELS = { corporel:"Corps", psychique:"Psyché", emotionnel:"Intuition-Émotion" };
+  var GESTE_LABELS = { constat:"Constat", decouverte:"Découvertes", resistance:"Nœuds à dénouer", discernement:"Discernement" };
+  var RESPONSE_LABELS = { consentir:"✓ Consenti", commenter:"💬 Commenté", ajuster:"✎ Ajusté" };
+  var PRAX_TYPE_LABELS = { probleme:"Problème à solutionner", decouverte:"Découverte", apprentissage:"Apprentissage" };
+  var EXPERIENCE_PLANES = [
+    {key:"physique", label:"Physique"}, {key:"psychique", label:"Psychique"},
+    {key:"emotionnel", label:"Émotionnel"}, {key:"intuitif", label:"Intuitif"}
+  ];
+
+  var SLUG = (function(){
+    try{ return new URLSearchParams(window.location.search).get("slug") || ""; }catch(e){ return ""; }
+  })();
+
+  var DATA = null; // dernière réponse de GET /api/admin/person, conservée pour les sauvegardes de notes
+
+  function adminKey(){
+    try{ return sessionStorage.getItem("scriptus-viator-admin-key") || ""; }catch(e){ return ""; }
+  }
+  function setAdminKey(k){
+    try{ sessionStorage.setItem("scriptus-viator-admin-key", k); }catch(e){}
+  }
+  function adminFetch(method, path, body){
+    var opts = { method: method, headers: { "content-type": "application/json", "x-admin-key": adminKey() } };
+    if(body !== undefined) opts.body = JSON.stringify(body);
+    return fetch(path, opts).then(function(res){
+      return res.json().catch(function(){ return null; }).then(function(data){
+        if(!res.ok){
+          var err = new Error((data && data.message) || "Erreur serveur.");
+          err.code = (data && data.error) || ("http_" + res.status);
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+  function esc(s){
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : s;
+    return d.innerHTML;
+  }
+  function formatDate(iso){
+    if(!iso) return "—";
+    try{
+      var d = new Date(iso);
+      return d.toLocaleDateString("fr-CA", { year:"numeric", month:"long", day:"numeric" }) + " à " + d.toLocaleTimeString("fr-CA", { hour:"2-digit", minute:"2-digit" });
+    }catch(e){ return iso; }
+  }
+  // Même logique que formatDateFR()/entryDateLabel() dans public/index.html — une date de
+  // session est une simple chaîne ISO "AAAA-MM-JJ" (ou, pour une entrée héritée, non-ISO,
+  // auquel cas elle passe inchangée).
+  var MOIS_FR = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  function formatDateFR(iso){
+    if(!iso) return "—";
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if(!m) return iso;
+    var y = parseInt(m[1],10), mo = parseInt(m[2],10)-1, d = parseInt(m[3],10);
+    return d + " " + (MOIS_FR[mo]||"") + " " + y;
+  }
+  function sessionDateLabel(sess){
+    if(sess.dateVecu || sess.dateEcrit) return "Vécu le " + formatDateFR(sess.dateVecu||sess.dateEcrit) + " · écrit le " + formatDateFR(sess.dateEcrit||sess.dateVecu);
+    return formatDateFR(sess.date);
+  }
+
+  function showKeyGate(msg){
+    document.getElementById("keyGate").hidden = false;
+    document.getElementById("personArea").hidden = true;
+    document.getElementById("keyMsg").textContent = msg || "";
+  }
+  function showPersonArea(){
+    document.getElementById("keyGate").hidden = true;
+    document.getElementById("personArea").hidden = false;
+  }
+
+  /* ---------- rendu : un élément d'analyse (poïétique ou praxéologique) ---------- */
+  function elementCardHtml(lens, el){
+    var regLabel = REGISTRE_LABELS[el.registre] || el.registre || "—";
+    var gesteLabel = GESTE_LABELS[el.geste] || el.geste || "—";
+    var lensTag = '<span class="lens-tag '+esc(lens)+'">'+(lens==="praxeologique"?"Praxéologique":"Poïétique")+'</span>';
+    var html = '<div class="element-card">' +
+      '<div class="element-tags">'+lensTag+'<span class="reg">'+esc(regLabel)+'</span><span class="tag">'+esc(gesteLabel)+'</span></div>' +
+      '<p class="element-text">'+esc(el.text)+'</p>';
+    if(el.response){
+      var r = el.response;
+      html += '<div class="element-response '+esc(r.kind)+'"><span class="resp-kind">'+esc(RESPONSE_LABELS[r.kind]||r.kind)+'</span><span class="resp-date">'+esc(r.d)+'</span>';
+      if(r.personText) html += '<p class="resp-text">« '+esc(r.personText)+' »</p>';
+      html += '</div>';
+    } else {
+      html += '<div class="element-pending">en attente — la personne n’a pas encore répondu</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- rendu : une fenêtre d'analyse (poïétique ou praxéologique) d'une session ---------- */
+  function analyseWindowHtml(sess, lens){
+    var lensLabel = lens === "praxeologique" ? "Praxéologique" : "Poïétique";
+    var arrKey = lens === "praxeologique" ? "analysePraxeologique" : "analysePoietique";
+    var els = sess[arrKey] || [];
+    var html = '<div class="named-space lens-'+lens+'"><div class="named-space-head"><h3>Analyse '+lensLabel.toLowerCase()+'</h3><span class="lens-badge '+lens+'">'+lensLabel+'</span></div>';
+    if(els.length === 0){
+      html += '<p class="empty-col">Aucune observation générée pour cette session.</p>';
+    } else {
+      html += els.map(function(el){ return elementCardHtml(lens, el); }).join("");
+    }
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- rendu : une session (manuscrit, témoignage, deux analyses) ---------- */
+  function sessionCardHtml(sess){
+    var html = '<div class="session-card">';
+    html += '<div class="session-head"><span class="session-date">'+esc(sessionDateLabel(sess))+'</span>' +
+      (sess.manuscript ? '<span class="session-manuscript-tag">'+esc(sess.manuscript.kind)+' · '+esc(sess.manuscript.name)+'</span>' : '') + '</div>';
+    if(sess.manuscript && sess.manuscript.extractedText){
+      html += '<details class="manuscript-details"><summary>Aperçu du manuscrit</summary>' +
+        '<p class="doc-text-preview">'+esc(sess.manuscript.extractedText)+'</p></details>';
+    } else if(!sess.manuscript){
+      html += '<p class="session-no-manuscript">Aucun manuscrit déposé pour cette session.</p>';
+    }
+    html += (sess.temoignage||"").trim()
+      ? '<p class="session-temoignage">'+esc(sess.temoignage)+'</p>'
+      : '<p class="session-temoignage empty">Aucun témoignage écrit pour cette session.</p>';
+    html += analyseWindowHtml(sess, "poietique");
+    html += analyseWindowHtml(sess, "praxeologique");
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- rendu : historique "Expérience d'écriture" (auto-évaluation, lecture seule) ----------
+     Même donnée que .exp-history dans public/index.html (entries[phaseKey].experience.checkins) —
+     un instrument distinct des sessions/analyses ci-dessus : ce que le geste d'écrire a coûté ou
+     donné, pas ce que le contenu écrit donne à observer. Intégré ici car demandé comme faisant
+     partie de « l'intégralité du contenu » d'une personne. ---------- */
+  function expHistoryHtml(checkins){
+    if(!checkins || checkins.length === 0){
+      return '<p class="empty-col">Aucune auto-évaluation enregistrée.</p>';
+    }
+    var html = '<div class="exp-history">';
+    checkins.slice().reverse().forEach(function(c){
+      html += '<div class="exp-entry"><div class="exp-entry-d">'+esc(sessionDateLabel(c))+'</div>';
+      var hasScore = EXPERIENCE_PLANES.some(function(p){ return !!c[p.key]; });
+      if(hasScore){
+        html += '<div class="exp-entry-scores">';
+        EXPERIENCE_PLANES.forEach(function(p){
+          if(c[p.key]) html += '<span class="exp-score-tag">'+esc(p.label)+' '+c[p.key]+'/5</span>';
+        });
+        html += '</div>';
+      }
+      if(c.note) html += '<p class="exp-entry-note">« '+esc(c.note)+' »</p>';
+      html += '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  /* ---------- rendu : éditeur de note de coaching pour une étape (lecture-écriture) ---------- */
+  function coachEditorHtml(phaseKey, text){
+    return '<div class="coach-editor">' +
+      '<div class="coach-editor-head"><h4>🕯️ Note de coaching — '+esc(STAGE_NAMES[phaseKey]||phaseKey)+'</h4></div>' +
+      '<p class="coach-editor-hint">Visible par la personne directement dans son app, en haut de cette étape. Écrire à nouveau remplace la note existante.</p>' +
+      '<textarea id="coachText__'+phaseKey+'" placeholder="Ton retour pour cette étape…">'+esc(text||"")+'</textarea>' +
+      '<div class="coach-editor-foot"><p class="io-toast" id="coachToast__'+phaseKey+'"></p>' +
+      '<button class="secondary" id="coachSave__'+phaseKey+'">Enregistrer</button></div>' +
+      '</div>';
+  }
+  function wireCoachEditor(phaseKey){
+    var btn = document.getElementById("coachSave__"+phaseKey);
+    if(!btn) return;
+    btn.addEventListener("click", function(){
+      var ta = document.getElementById("coachText__"+phaseKey);
+      var toast = document.getElementById("coachToast__"+phaseKey);
+      var text = ta ? ta.value : "";
+      btn.disabled = true;
+      toast.className = "io-toast";
+      toast.textContent = "Enregistrement…";
+      adminFetch("PUT", "/api/admin/coaching-notes", { slug: SLUG, phaseKey: phaseKey, text: text }).then(function(){
+        btn.disabled = false;
+        toast.className = "io-toast ok";
+        toast.textContent = "Enregistré ✓";
+        if(DATA && DATA.coachingNotes) DATA.coachingNotes[phaseKey] = text;
+        setTimeout(function(){ if(toast.textContent === "Enregistré ✓") toast.textContent = ""; }, 2200);
+      }, function(err){
+        btn.disabled = false;
+        toast.className = "io-toast err";
+        toast.textContent = "L’enregistrement a échoué (" + ((err && err.code) || "erreur") + ").";
+      });
+    });
+  }
+
+  /* ---------- rendu : une étape-témoignage (inception..post-partum), projet actif ou archivé ---------- */
+  function phaseSectionHtml(phaseKey, num, phaseEntry, opts){
+    opts = opts || {};
+    var sessions = (phaseEntry && phaseEntry.sessions) || [];
+    var html = '<div class="phase-section"><div class="phase-head"><span class="num">0'+num+' / 06</span><h2>'+esc(STAGE_NAMES[phaseKey]||phaseKey)+'</h2></div>';
+    if(opts.editableNotes){
+      html += coachEditorHtml(phaseKey, opts.noteText||"");
+    }
+    if(sessions.length === 0){
+      html += '<p class="empty-col">Aucune session enregistrée à cette étape.</p>';
+    } else {
+      html += '<div class="sessions-list-label">'+sessions.length+' session'+(sessions.length>1?'s':'')+' enregistrée'+(sessions.length>1?'s':'')+'</div>';
+      sessions.forEach(function(sess){ html += sessionCardHtml(sess); });
+    }
+    html += '<p class="compil-source-label">Expérience d’écriture — auto-évaluation</p>';
+    html += expHistoryHtml(phaseEntry && phaseEntry.experience && phaseEntry.experience.checkins);
+    var compil = phaseEntry && phaseEntry.compilation;
+    html += '<p class="compil-source-label">Synthèse phénoménologique compilée</p>';
+    html += '<div class="recit-card"><div class="lbl">Compilation de l’étape'+(compil&&compil.d?' · '+esc(compil.d):'')+'</div>';
+    html += (compil && (compil.text||"").trim())
+      ? '<p class="txt">'+esc(compil.text)+'</p>'
+      : '<p class="txt empty">Pas encore écrite.</p>';
+    html += '</div></div>';
+    return html;
+  }
+
+  /* ---------- rendu : "Ce qu'il en naît" (texte intégral + méta-analyse), projet actif ou archivé ---------- */
+  function naissanceSectionHtml(entries, opts){
+    opts = opts || {};
+    var html = '<div class="phase-section"><div class="phase-head"><span class="num">06 / 06</span><h2>'+esc(STAGE_NAMES.naissance)+'</h2></div>';
+    if(opts.editableNotes){
+      html += coachEditorHtml("naissance", opts.noteText||"");
+    }
+    html += '<p class="compil-source-label" style="margin-top:0;">Texte intégral</p>';
+    TEMOIGNAGE_PHASES.forEach(function(pk, i){
+      var text = ((entries[pk] && entries[pk].sessions) || []).map(function(s){ return (s.temoignage||"").trim(); }).filter(Boolean).join("\n\n");
+      html += '<div class="recit-movement"><div class="rm-head"><span class="rm-num">0'+(i+1)+'</span><h3>'+esc(STAGE_NAMES[pk])+'</h3></div>';
+      html += text ? '<p class="rm-text">'+esc(text)+'</p>' : '<p class="rm-text empty">(rien d’écrit à cette étape)</p>';
+      html += '</div>';
+    });
+    var ma = (entries.naissance && entries.naissance.metaAnalyse) || {};
+    html += '<p class="compil-source-label">Méta-analyse phénoménologique</p>';
+    ["poietique","praxeologique"].forEach(function(lens){
+      var seg = ma[lens];
+      var lensLabel = lens === "poietique" ? "Poïétique" : "Praxéologique";
+      html += '<div class="recit-card" style="margin-bottom:10px;"><div class="lbl">'+lensLabel+(seg&&seg.d?' · '+esc(seg.d):'')+'</div>';
+      html += (seg && (seg.text||"").trim()) ? '<p class="txt">'+esc(seg.text)+'</p>' : '<p class="txt empty">Pas encore écrite.</p>';
+      html += '</div>';
+    });
+    html += '<p class="compil-source-label">Du potentiel à l’incarnation</p>';
+    var journal = (entries.experienceGlobale && entries.experienceGlobale.journal) || [];
+    if(journal.length === 0){
+      html += '<p class="empty-col">Rien d’écrit ici pour l’instant.</p>';
+    } else {
+      journal.forEach(function(e){
+        html += '<div class="onto-journal-entry"><div class="onto-journal-d">'+esc(sessionDateLabel(e))+'</div>' +
+          '<p class="onto-journal-text">'+esc(e.t)+'</p></div>';
+      });
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function projectMetaHtml(project){
+    var rows = [
+      ["Titre poïétique", project.poieticTitle], ["Titre de travail", project.workingTitle],
+      ["Genre", project.genre], ["Débuté", project.started],
+      ["Nom d’auteur", project.authorName], ["Lieu", project.place]
+    ];
+    var html = '<div class="card"><div class="meta-grid">';
+    rows.forEach(function(r){
+      html += '<div><span class="l">'+esc(r[0])+'</span><span class="v">'+(r[1]?esc(r[1]):'<span class="empty" style="padding:0;">—</span>')+'</span></div>';
+    });
+    html += '</div></div>';
+    return html;
+  }
+
+  function praxeologieHtml(list){
+    if(!list || list.length === 0) return '<p class="empty">Aucune entrée de praxéologie pour l’instant.</p>';
+    var html = "";
+    list.forEach(function(e){
+      html += '<div class="prax-entry"><div class="prax-tags"><span class="tag">'+esc(PRAX_TYPE_LABELS[e.type]||e.type)+'</span>' +
+        (e.stage ? '<span class="tag">'+esc(STAGE_NAMES[e.stage]||e.stage)+'</span>' : '') +
+        (e.status ? '<span class="status '+esc(e.status)+'">'+(e.status==="resolu"?"Résolu":"Ouvert")+'</span>' : '') +
+        '</div><p class="prax-text">'+esc(e.text)+'</p><div class="prax-d">'+esc(e.d||"")+'</div></div>';
+    });
+    return html;
+  }
+
+  /* ---------- rendu complet d'un projet (actif : notes éditables / archivé : lecture seule) ---------- */
+  function projectBodyHtml(project, entries, coachingNotes, editable){
+    var html = "";
+    if(editable) html += projectMetaHtml(project);
+    TEMOIGNAGE_PHASES.forEach(function(pk, i){
+      html += phaseSectionHtml(pk, i+1, entries[pk], {
+        editableNotes: editable,
+        noteText: coachingNotes ? coachingNotes[pk] : ""
+      });
+    });
+    html += naissanceSectionHtml(entries, {
+      editableNotes: editable,
+      noteText: coachingNotes ? coachingNotes.naissance : ""
+    });
+    return html;
+  }
+
+  function archivedProjectHtml(proj, idx){
+    var title = (proj.project && proj.project.poieticTitle) || ("Projet archivé " + (idx+1));
+    var html = '<details class="archived-project"><summary><span class="archived-title">'+esc(title)+'</span><span class="archived-date">archivé le '+esc(formatDate(proj.archivedAt))+'</span></summary>';
+    html += '<div class="archived-body">' + projectBodyHtml(proj.project, proj.entries, null, false) + '</div></details>';
+    return html;
+  }
+
+  /* ---------- assemblage de la page ---------- */
+  function renderPerson(data){
+    DATA = data;
+    document.title = "Scriptus Viator — " + (data.person.displayName || "Détail");
+    var html = '<h1>'+esc(data.person.displayName)+'</h1>';
+    html += '<p class="person-slug">Lien : /?p='+esc(data.person.slug)+'</p>';
+    html += '<p class="lede">Lecture intégrale de ce que cette personne a écrit — outil d’accompagnement. Rien ici ne peut être modifié dans ses propres écrits ; seules les notes de coaching ci-dessous, visibles par elle, sont à toi.</p>';
+
+    html += projectBodyHtml(data.project, data.entries, data.coachingNotes, true);
+
+    html += '<div class="phase-section"><div class="phase-head"><h2 style="font-size:19px;">Praxéologie</h2></div>';
+    html += '<div class="card">' + praxeologieHtml(data.praxeologie) + '</div></div>';
+
+    html += '<div class="phase-section"><div class="phase-head"><h2 style="font-size:19px;">Projets archivés</h2></div>';
+    if(!data.archivedProjects || data.archivedProjects.length === 0){
+      html += '<p class="empty">Aucun projet archivé pour cette personne.</p>';
+    } else {
+      data.archivedProjects.forEach(function(p, i){ html += archivedProjectHtml(p, i); });
+    }
+    html += '</div>';
+
+    document.getElementById("personArea").innerHTML = html;
+    document.getElementById("personArea").hidden = false;
+    COACHING_PHASES.forEach(wireCoachEditor);
+  }
+
+  function loadPerson(){
+    document.getElementById("personArea").innerHTML = '<p class="empty">Chargement…</p>';
+    document.getElementById("personArea").hidden = false;
+    adminFetch("GET", "/api/admin/person?slug=" + encodeURIComponent(SLUG)).then(function(data){
+      showPersonArea();
+      renderPerson(data);
+    }, function(err){
+      if(err.status === 401){ showKeyGate("Clé invalide — vérifie et réessaie."); return; }
+      document.getElementById("personArea").innerHTML = '<p class="empty">Le chargement a échoué (' + (err.code || "erreur") + ').</p>';
+      document.getElementById("personArea").hidden = false;
+    });
+  }
+
+  document.getElementById("keySubmit").addEventListener("click", function(){
+    var val = document.getElementById("adminKeyInput").value.trim();
+    if(!val) return;
+    setAdminKey(val);
+    if(!SLUG){
+      showPersonArea();
+      document.getElementById("personArea").innerHTML = '<p class="empty">Aucune personne précisée — reviens à la liste des personnes et choisis « Voir le détail ».</p>';
+      return;
+    }
+    loadPerson();
+  });
+
+  if(!adminKey()){
+    showKeyGate("");
+  } else if(!SLUG){
+    showPersonArea();
+    document.getElementById("personArea").innerHTML = '<p class="empty">Aucune personne précisée — reviens à la liste des personnes et choisis « Voir le détail ».</p>';
+  } else {
+    loadPerson();
+  }
+})();
+</script>
+</body>
+</html>

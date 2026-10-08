@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scriptus Viator — Administration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Mêmes tokens que l'app (public/index.html) — même famille visuelle, page séparée. */
+  :root{
+    --bg:#faf9f6; --bg-soft:#f1ede3; --surface:#ffffff; --surface-2:#f4f1ea;
+    --ink:#1b1b18; --muted:#79766c; --border:#e6e2d8; --border-strong:#d9cfba;
+    --accent:#c2410c; --accent-soft:#ffe6d1; --accent-ink:#ffffff; --accent-deep:#7c2d12;
+    --sky:#0369a1; --stage-done:#5c7a52; --stage-done-soft:#dee6d8;
+    --shadow: 27,27,24;
+    --elev-1: 0 1px 2px rgba(var(--shadow),.05), 0 3px 8px -3px rgba(var(--shadow),.10);
+    --elev-2: 0 3px 8px -3px rgba(var(--shadow),.12), 0 12px 26px -10px rgba(var(--shadow),.20);
+    --serif:'Fraunces', Georgia, serif; --sans:'Archivo', -apple-system, 'Segoe UI', sans-serif; --mono:'IBM Plex Mono', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161310; --bg-soft:#1c170f; --surface:#211c14; --surface-2:#2a2317;
+      --ink:#f0e9db; --muted:#a89a84; --border:#3a3123; --border-strong:#4d4029;
+      --accent:#e2894a; --accent-soft:#3d2a1c; --accent-ink:#1a1108; --accent-deep:#f4a969;
+      --sky:#5fc2f2; --stage-done:#8bab7e; --stage-done-soft:#243021; --shadow:0,0,0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161310; --bg-soft:#1c170f; --surface:#211c14; --surface-2:#2a2317;
+    --ink:#f0e9db; --muted:#a89a84; --border:#3a3123; --border-strong:#4d4029;
+    --accent:#e2894a; --accent-soft:#3d2a1c; --accent-ink:#1a1108; --accent-deep:#f4a969;
+    --sky:#5fc2f2; --stage-done:#8bab7e; --stage-done-soft:#243021; --shadow:0,0,0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+  main{max-width:920px; margin:0 auto; padding:34px 20px 80px;}
+  .wordmark{display:flex; align-items:baseline; gap:8px; margin-bottom:26px;}
+  .wordmark .flame{font-size:18px;}
+  .wordmark-word{font-family:var(--serif); font-style:italic; font-weight:500; font-size:21px; color:var(--accent-deep);}
+  .wordmark-sub{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);}
+  h1{font-size:24px; margin:0 0 4px; color:var(--accent-deep); font-weight:700;}
+  .lede{color:var(--muted); font-size:14px; max-width:62ch; margin:0 0 26px;}
+  .card{background:var(--surface); border:1px solid var(--border-strong); border-radius:6px; padding:20px 22px; margin-bottom:24px; box-shadow:var(--elev-1);}
+  .card h2{font-size:15px; margin:0 0 14px; font-weight:700; color:var(--ink);}
+  label{display:block; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:6px;}
+  input[type="text"], input[type="password"]{
+    width:100%; font-family:var(--sans); font-size:14px; color:var(--ink); background:var(--bg-soft);
+    border:1px solid var(--border); border-radius:4px; padding:9px 11px; margin-bottom:14px;
+  }
+  .row{display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;}
+  .row > div{flex:1; min-width:200px;}
+  button{
+    font-family:var(--sans); font-weight:600; font-size:13.5px; border:none; border-radius:4px;
+    padding:10px 16px; cursor:pointer; background:var(--accent); color:var(--accent-ink);
+  }
+  button:hover{filter:brightness(1.05);}
+  button:disabled{opacity:.5; cursor:not-allowed;}
+  button.secondary{background:var(--surface-2); color:var(--ink); border:1px solid var(--border);}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th{text-align:left; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:8px 10px; border-bottom:1px solid var(--border-strong);}
+  td{padding:10px 10px; border-bottom:1px solid var(--border); vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  .link-cell{font-family:var(--mono); font-size:12px; color:var(--muted); word-break:break-all;}
+  .copy-btn{font-family:var(--mono); font-size:11px; padding:5px 10px;}
+  .pill{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.04em; padding:2px 7px; border-radius:2px; background:var(--accent-soft); color:var(--accent); display:inline-block;}
+  .msg{font-family:var(--mono); font-size:12px; color:var(--muted); min-height:16px; margin-top:4px;}
+  .msg.err{color:var(--accent);}
+  .empty{color:var(--muted); font-style:italic; font-size:13px; padding:10px 0;}
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+<main>
+  <div class="wordmark">
+    <span class="flame">🕯️</span>
+    <span>
+      <span class="wordmark-word">Scriptus Viator</span><br>
+      <span class="wordmark-sub">Administration</span>
+    </span>
+  </div>
+
+  <div id="keyGate" class="card">
+    <h2>Clé d'accès</h2>
+    <p class="lede" style="margin-bottom:14px;">Colle ici la clé d'administration (variable d'environnement <code>ADMIN_KEY</code> sur Vercel). Elle reste seulement dans cet onglet.</p>
+    <div class="row">
+      <div><input type="password" id="adminKeyInput" placeholder="Clé d'administration"></div>
+      <div style="flex:none;"><button id="keySubmit">Entrer</button></div>
+    </div>
+    <p class="msg err" id="keyMsg"></p>
+  </div>
+
+  <div id="adminArea" hidden>
+    <h1>Les personnes</h1>
+    <p class="lede">Chaque personne accède à son espace via un lien unique, créé ici — jamais par elle-même.</p>
+
+    <div class="card">
+      <h2>Ajouter une personne</h2>
+      <div class="row">
+        <div><label>Nom affiché</label><input type="text" id="newPersonName" placeholder="Ex. : Marie Tremblay"></div>
+        <div style="flex:none;"><button id="addPersonBtn">Créer le lien</button></div>
+      </div>
+      <p class="msg" id="addPersonMsg"></p>
+      <div id="newLinkBox" hidden class="card" style="background:var(--bg-soft); margin:10px 0 0;">
+        <p style="margin:0 0 8px;">Lien créé pour <b id="newLinkName"></b> :</p>
+        <div class="row">
+          <div><input type="text" id="newLinkValue" readonly></div>
+          <div style="flex:none;"><button class="secondary copy-btn" id="newLinkCopy">Copier</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Toutes les personnes</h2>
+      <div id="personsTableWrap"><p class="empty">Chargement…</p></div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var STAGE_NAMES = {
+    inception: "Inception", gestation: "Gestation", creation: "Création",
+    "mise-au-monde": "Mise au monde", "post-partum": "Post-Partum", naissance: "Ce qu'il en naît"
+  };
+
+  function adminKey(){
+    try{ return sessionStorage.getItem("scriptus-viator-admin-key") || ""; }catch(e){ return ""; }
+  }
+  function setAdminKey(k){
+    try{ sessionStorage.setItem("scriptus-viator-admin-key", k); }catch(e){}
+  }
+  function adminFetch(method, path, body){
+    var opts = { method: method, headers: { "content-type": "application/json", "x-admin-key": adminKey() } };
+    if(body !== undefined) opts.body = JSON.stringify(body);
+    return fetch(path, opts).then(function(res){
+      return res.json().catch(function(){ return null; }).then(function(data){
+        if(!res.ok){
+          var err = new Error((data && data.message) || "Erreur serveur.");
+          err.code = (data && data.error) || ("http_" + res.status);
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  function fullLink(relLink){
+    return window.location.origin + relLink;
+  }
+
+  function formatDate(iso){
+    if(!iso) return "—";
+    try{
+      var d = new Date(iso);
+      return d.toLocaleDateString("fr-CA", { year:"numeric", month:"long", day:"numeric" }) + " à " + d.toLocaleTimeString("fr-CA", { hour:"2-digit", minute:"2-digit" });
+    }catch(e){ return iso; }
+  }
+
+  function renderPersonsTable(persons){
+    var wrap = document.getElementById("personsTableWrap");
+    if(!persons || persons.length === 0){
+      wrap.innerHTML = '<p class="empty">Aucune personne créée pour l’instant.</p>';
+      return;
+    }
+    var html = '<table><thead><tr><th>Nom</th><th>Lien</th><th>Étape en cours</th><th>Sessions</th><th>Dernière activité</th><th></th></tr></thead><tbody>';
+    persons.forEach(function(p){
+      var link = fullLink(p.link);
+      html += '<tr>' +
+        '<td>'+escapeHtml(p.displayName)+'</td>' +
+        '<td><div class="link-cell">'+escapeHtml(link)+'</div><button class="secondary copy-btn" data-copy="'+escapeHtml(link)+'" style="margin-top:6px;">Copier</button></td>' +
+        '<td><span class="pill">'+escapeHtml(STAGE_NAMES[p.currentStage] || p.currentStage)+'</span></td>' +
+        '<td>'+p.totalSessions+'</td>' +
+        '<td>'+formatDate(p.lastActivity)+'</td>' +
+        '<td><a class="secondary copy-btn" style="text-decoration:none; display:inline-block;" href="admin-person.html?slug='+encodeURIComponent(p.slug)+'">👁 Voir le détail</a></td>' +
+        '</tr>';
+    });
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+    Array.prototype.forEach.call(wrap.querySelectorAll("[data-copy]"), function(btn){
+      btn.addEventListener("click", function(){
+        var text = btn.getAttribute("data-copy");
+        copyToClipboard(text);
+        var orig = btn.textContent;
+        btn.textContent = "Copié";
+        setTimeout(function(){ btn.textContent = orig; }, 1400);
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : s;
+    return d.innerHTML;
+  }
+
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).catch(function(){ fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function loadPersons(){
+    adminFetch("GET", "/api/admin/persons").then(function(data){
+      renderPersonsTable(data.persons || []);
+    }, function(err){
+      document.getElementById("personsTableWrap").innerHTML = '<p class="empty">Le chargement a échoué (' + (err.code || "erreur") + ').</p>';
+      if(err.status === 401) showKeyGate("Clé invalide — vérifie et réessaie.");
+    });
+  }
+
+  function showKeyGate(msg){
+    document.getElementById("keyGate").hidden = false;
+    document.getElementById("adminArea").hidden = true;
+    document.getElementById("keyMsg").textContent = msg || "";
+  }
+  function showAdminArea(){
+    document.getElementById("keyGate").hidden = true;
+    document.getElementById("adminArea").hidden = false;
+    loadPersons();
+  }
+
+  document.getElementById("keySubmit").addEventListener("click", function(){
+    var val = document.getElementById("adminKeyInput").value.trim();
+    if(!val) return;
+    setAdminKey(val);
+    // Vérifie la clé avec un appel réel plutôt que de simplement la croire valide.
+    adminFetch("GET", "/api/admin/persons").then(function(data){
+      renderPersonsTable(data.persons || []);
+      showAdminArea();
+    }, function(err){
+      showKeyGate(err.status === 401 ? "Clé invalide — vérifie et réessaie." : "Le serveur n'a pas répondu (" + (err.code||"erreur") + ").");
+    });
+  });
+
+  document.getElementById("addPersonBtn").addEventListener("click", function(){
+    var nameInput = document.getElementById("newPersonName");
+    var name = nameInput.value.trim();
+    if(!name) return;
+    var btn = document.getElementById("addPersonBtn");
+    btn.disabled = true;
+    document.getElementById("addPersonMsg").textContent = "";
+    adminFetch("POST", "/api/admin/persons", { displayName: name }).then(function(data){
+      btn.disabled = false;
+      nameInput.value = "";
+      document.getElementById("newLinkBox").hidden = false;
+      document.getElementById("newLinkName").textContent = data.person.displayName;
+      document.getElementById("newLinkValue").value = fullLink(data.link);
+      loadPersons();
+    }, function(err){
+      btn.disabled = false;
+      document.getElementById("addPersonMsg").textContent = "La création a échoué (" + (err.code||"erreur") + ").";
+      document.getElementById("addPersonMsg").className = "msg err";
+    });
+  });
+
+  document.getElementById("newLinkCopy").addEventListener("click", function(){
+    copyToClipboard(document.getElementById("newLinkValue").value);
+    var btn = document.getElementById("newLinkCopy");
+    var orig = btn.textContent; btn.textContent = "Copié";
+    setTimeout(function(){ btn.textContent = orig; }, 1400);
+  });
+
+  var existingKey = adminKey();
+  if(existingKey){
+    showAdminArea();
+  } else {
+    showKeyGate("");
+  }
+})();
+</script>
+</body>
+</html>
