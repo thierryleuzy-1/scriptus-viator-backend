@@ -226,7 +226,7 @@ app.patch(
     const person = await requirePerson(req, res);
     if (!person) return;
     const { status } = (req as any).validated;
-    const row = await storage.patchPraxeologieStatus(person.id, req.params.id, status);
+    const row = await storage.patchPraxeologieStatus(person.id, req.params.id as string, status);
     if (!row) {
       res.status(404).json({ error: "not_found" });
       return;
